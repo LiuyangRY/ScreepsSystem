@@ -40,10 +40,11 @@ export class Builder implements ICreepConfig{
             const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
             if(!!targets && targets.length > 0){
                 this.target = targets[0];
-            }else{
-                creep.say(`🚧 当前没有建造工作，将角色切换为升级者。`);
-                creep.memory.role = "repairer";
             }
+            // else{
+            //     creep.say(`🚧 当前没有建造工作，将角色切换为升级者。`);
+            //     creep.memory.role = "repairer";
+            // }
         }
         
         if(!!this.target){
