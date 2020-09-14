@@ -45,7 +45,7 @@ export class Repairer implements ICreepConfig{
                 this.target = target;
             }else{
                 this.target == null;
-                creep.say(`🚧 当前没有维修工作，将角色切换为建造者。`);
+                creep.say(`🚧 当前没有维修工作，将角色切换为升级者。`);
                 creep.memory.role = "upgrader";
             }
         }

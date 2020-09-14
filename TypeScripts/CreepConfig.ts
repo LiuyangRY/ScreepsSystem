@@ -2,6 +2,7 @@ import { Harvester } from "./role.harvester";
 import { Builder } from "./role.builder";
 import { Upgrader } from "./role.upgrader";
 import { Repairer} from "./role.repairer"
+import { WallRepairer } from "./role.wallRepairer";
 
 export class CreepConfigs {
     creepRoles: string[];
@@ -12,9 +13,10 @@ export class CreepConfigs {
      *  Creep 配置构造函数
      */
     constructor() {
-        this.creepRoles = ["harvester", "builder", "upgrader", "repairerV2", "harvesterV2", "builderV2", "upgraderV2"];
+        this.creepRoles = ["harvester", "builder", "upgrader", "repairer", "wallRepairer", "repairerV2", "harvesterV2", "builderV2", "upgraderV2"];
         this.creepSpawningConfig = {
                 "repairer": new CreepSpawningInfo("repairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
+                "wallRepairer": new CreepSpawningInfo("wallRepairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 "harvester": new CreepSpawningInfo("harvester", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
                 "builder": new CreepSpawningInfo("builder", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
                 "upgrader": new CreepSpawningInfo("upgrader", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
@@ -45,6 +47,9 @@ export class CreepConfigs {
             case "repairer":
             case "repairerV2":
                 worker = new Repairer();
+                break;
+            case "wallRepairer":
+                worker = new WallRepairer();
                 break;
         }
         working = worker?.Switch ? worker.Switch(creep) : true;

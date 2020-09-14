@@ -1,12 +1,12 @@
 import { ICreepConfig } from "./ICreepConfig"
 
-export class Harvester implements ICreepConfig{
+export class WallRepairer implements ICreepConfig{
 
     /**
-     * Harvester 类的构造函数
+     * WallRepairer 类的构造函数
      * @property color creep 路径的颜色
      */
-    constructor(color: string = "#6a9955") {
+    constructor(color: string = "#66cc66") {
         this.pathColor = color;
         this.target = null;
     }
@@ -17,8 +17,7 @@ export class Harvester implements ICreepConfig{
     // 能量矿主键
     sourceId: Id<Source> | undefined;
 
-    // 收集目标
-    target: any;
+    target: Structure<StructureConstant> | null;
 
     // 采集能量矿
     Source(creep: Creep): any {
@@ -35,23 +34,36 @@ export class Harvester implements ICreepConfig{
         }
     }
 
-    // 存储能量
+    // 维修墙
     Target(creep: Creep): any {
         if(!!!this.target){
-            const target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-                filter: function (structure): boolean { 
-                        return (structure.structureType == STRUCTURE_SPAWN 
-                            ||  structure.structureType == STRUCTURE_EXTENSION 
-                            ||  structure.structureType == STRUCTURE_TOWER) 
-                            &&  structure.store[RESOURCE_ENERGY] < structure.store.getCapacity(RESOURCE_ENERGY)
-                    }});
-            if(!!target){
-                this.target = target;
+            const targets = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure: Structure) => (structure.hits < structure.hitsMax ) && (structure.structureType == STRUCTURE_WALL)
+            });
+            if(!!targets){
+                // 找出血量百分比最低的建筑作为目标
+                for(let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
+                    this.target = creep.pos.findClosestByPath(targets, {
+                        filter: (wall: StructureWall) => (wall.hits / wall.hitsMax < percentage)
+                    });
+                    if(!!this.target){
+                        break;
+                    }
+                }
+            }else{
+                this.target == null;
+                creep.say(`🚧 当前没有维修工作，将角色切换为升级者。`);
+                creep.memory.role = "upgrader";
             }
         }
-        if(!!this.target && this.target.store[RESOURCE_ENERGY] < this.target.store.getCapacity(RESOURCE_ENERGY)){
-            if(creep.transfer(this.target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+        
+        if(!!this.target){
+            if(creep.repair(this.target) == ERR_NOT_IN_RANGE){
                 creep.moveTo(this.target, { visualizePathStyle: { stroke: this.pathColor }});
+            }
+            if(this.target.hits == this.target.hitsMax){
+                creep.say(`🚧 ${this.target.structureType}维修工作已完成。`);
+                this.target = null;
             }
         }
     }
@@ -61,12 +73,12 @@ export class Harvester implements ICreepConfig{
         // creep 身上没有能量且 creep 之前的工作状态为“工作”
         if(creep.store[RESOURCE_ENERGY] <= 0 && !!creep.memory.working){
             creep.memory.working = false;
-            creep.say("🔄 执行采集工作。");
+            creep.say("🔄 执行采集工作");
         }
         // creep 身上能量已满且 creep 之前的工作状态为“不工作”
         if(creep.store[RESOURCE_ENERGY] >= creep.store.getCapacity() && !!!creep.memory.working){
             creep.memory.working = true;
-            creep.say("🚧 执行存储工作。");
+            creep.say("🚧 执行维修工作。");
         }
         return creep.memory.working;
     }
