@@ -38,15 +38,20 @@ export class Harvester implements ICreepConfig{
     // 存储能量
     Target(creep: Creep): any {
         if(!!!this.target){
-            const target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+            this.target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                 filter: function (structure): boolean { 
                         return (structure.structureType == STRUCTURE_SPAWN 
                             ||  structure.structureType == STRUCTURE_EXTENSION 
                             ||  structure.structureType == STRUCTURE_TOWER) 
-                            &&  structure.store[RESOURCE_ENERGY] < structure.store.getCapacity(RESOURCE_ENERGY)
+                            &&  structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
                     }});
-            if(!!target){
-                this.target = target;
+            if(!!this.target){
+                this.target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: function (structure): boolean { 
+                            return (structure.structureType == STRUCTURE_CONTAINER) 
+                                &&  structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                        }
+                    });
             }
         }
         if(!!this.target && this.target.store[RESOURCE_ENERGY] < this.target.store.getCapacity(RESOURCE_ENERGY)){
