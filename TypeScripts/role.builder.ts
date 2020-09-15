@@ -16,22 +16,26 @@ export class Builder implements ICreepConfig{
     pathColor: string;
 
     // 能量源
-    source: Structure<StructureConstant> | undefined | null;
+    source: Source | undefined | null;
 
     target: ConstructionSite<BuildableStructureConstant> | null;
 
     // 采集能量
     Source(creep: Creep): any {
-        if(!!!this.source){
-            this.source = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: function (structure): boolean { 
-                    return (structure.structureType == STRUCTURE_CONTAINER) 
-                        &&  structure.store.getCapacity(RESOURCE_ENERGY) > 0
-                }
-            });
-        }
+        this.source = creep.pos.findClosestByRange(FIND_SOURCES,{
+            filter: function (source): boolean { 
+                return source.energy > 0
+            }
+        });
+        // if(!!!this.sourceId){
+        //     this.sourceId = creep.pos.findClosestByRange(FIND_SOURCES,{
+        //         filter: function (source): boolean { 
+        //             return source.energy > 0
+        //         }
+        //     })?.id;
+        // }
         if(!!this.source){
-            if (creep.withdraw(this.source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if (creep.harvest(this.source) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(this.source, { visualizePathStyle: { stroke: this.pathColor }});
             }
         }

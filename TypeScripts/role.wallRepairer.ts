@@ -25,7 +25,7 @@ export class WallRepairer implements ICreepConfig{
         this.source = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: function (structure): boolean { 
                 return (structure.structureType == STRUCTURE_CONTAINER) 
-                    &&  structure.store.getCapacity(RESOURCE_ENERGY) > 0
+                    &&  structure.store[RESOURCE_ENERGY] > 0
             }
         });
         if(!!this.source){
