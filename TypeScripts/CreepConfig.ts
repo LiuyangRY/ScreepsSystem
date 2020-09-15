@@ -13,18 +13,19 @@ export class CreepConfigs {
      *  Creep 配置构造函数
      */
     constructor() {
-        this.creepRoles = ["harvester", "builder", "upgrader", "repairer", "wallRepairer", "repairerV2", "harvesterV2", "builderV2", "upgraderV2"];
+        this.creepRoles = ["harvester", "builder", "upgrader", "repairer", "wallRepairer", "repairerV2", "harvesterV2", "builderV2", "upgraderV2", "wallRepairerV2"];
         this.creepSpawningConfig = {
                 "repairer": new CreepSpawningInfo("repairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 "wallRepairer": new CreepSpawningInfo("wallRepairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 "harvester": new CreepSpawningInfo("harvester", [WORK, CARRY,MOVE], 0),
                 "builder": new CreepSpawningInfo("builder", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
-                "upgrader": new CreepSpawningInfo("upgrader", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
+                "upgrader": new CreepSpawningInfo("upgrader", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 // 更新换代测试角色
                 "repairerV2": new CreepSpawningInfo("repairerV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
+                "wallRepairerV2": new CreepSpawningInfo("wallRepairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
                 "harvesterV2": new CreepSpawningInfo("harvesterV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
                 "builderV2": new CreepSpawningInfo("builderV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
-                "upgraderV2": new CreepSpawningInfo("upgraderV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
+                "upgraderV2": new CreepSpawningInfo("upgraderV2", [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 1),
         }
     }
 
@@ -49,6 +50,7 @@ export class CreepConfigs {
                 worker = new Repairer();
                 break;
             case "wallRepairer":
+            case "wallRepairerV2":
                 worker = new WallRepairer();
                 break;
         }

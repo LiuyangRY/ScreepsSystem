@@ -1,2 +1,5 @@
 # 忽略 JavaScripts 目录（ js 文件由 TypeScript 自动生成）
 JavaScripts/
+
+# 忽略 JavaScript 文件
+*.js
