@@ -40,12 +40,12 @@ export class Harvester implements ICreepConfig{
         if(!!!this.target){
             this.target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                 filter: function (structure): boolean { 
-                        return (structure.structureType == STRUCTURE_SPAWN 
-                            ||  structure.structureType == STRUCTURE_EXTENSION 
-                            ||  structure.structureType == STRUCTURE_TOWER) 
+                        return (structure.structureType == STRUCTURE_TOWER
+                            || structure.structureType == STRUCTURE_SPAWN 
+                            ||  structure.structureType == STRUCTURE_EXTENSION) 
                             &&  structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
                     }});
-            if(!!this.target){
+            if(!!!this.target){
                 this.target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: function (structure): boolean { 
                             return (structure.structureType == STRUCTURE_CONTAINER) 
