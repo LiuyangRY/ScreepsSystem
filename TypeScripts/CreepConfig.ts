@@ -15,10 +15,10 @@ export class CreepConfigs {
     constructor() {
         this.creepRoles = ["harvester", "builder", "upgrader", "repairer", "wallRepairer", "repairerV2", "harvesterV2", "builderV2", "upgraderV2"];
         this.creepSpawningConfig = {
-                "repairer": new CreepSpawningInfo("repairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
+                "repairer": new CreepSpawningInfo("repairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 "wallRepairer": new CreepSpawningInfo("wallRepairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
-                "harvester": new CreepSpawningInfo("harvester", [WORK, CARRY,MOVE], 1),
-                "builder": new CreepSpawningInfo("builder", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
+                "harvester": new CreepSpawningInfo("harvester", [WORK, CARRY,MOVE], 0),
+                "builder": new CreepSpawningInfo("builder", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 "upgrader": new CreepSpawningInfo("upgrader", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 2),
                 // 更新换代测试角色
                 "repairerV2": new CreepSpawningInfo("repairerV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
