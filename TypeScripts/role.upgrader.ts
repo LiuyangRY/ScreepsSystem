@@ -8,6 +8,7 @@ export class Upgrader implements ICreepConfig{
      */
     constructor(color: string = "#3ac98f") {
         this.pathColor = color;
+        this.source = undefined;
     }
 
     // 路径颜色
@@ -16,15 +17,20 @@ export class Upgrader implements ICreepConfig{
     // 控制器
     controller: StructureController | undefined;
 
+    // 能量源
+    source: Structure<StructureConstant> | undefined | null;
+
     // 采集能量矿
     Source(creep: Creep): any {
-        const sourceId = creep.pos.findClosestByRange(FIND_SOURCES)?.id;
-        if(!!sourceId){
-            const source = Game.getObjectById(sourceId);
-            if(!!source){
-                if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, { visualizePathStyle: { stroke: this.pathColor }});
-                }
+        this.source = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: function (structure): boolean { 
+                return (structure.structureType == STRUCTURE_CONTAINER) 
+                    &&  structure.store.getCapacity(RESOURCE_ENERGY) > 0
+            }
+        });
+        if(!!this.source){
+            if (creep.withdraw(this.source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(this.source, { visualizePathStyle: { stroke: this.pathColor }});
             }
         }
     }

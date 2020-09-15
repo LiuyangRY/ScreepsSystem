@@ -22,9 +22,18 @@ export class Harvester implements ICreepConfig{
 
     // 采集能量矿
     Source(creep: Creep): any {
-        if(!!!this.sourceId){
-            this.sourceId = creep.pos.findClosestByRange(FIND_SOURCES)?.id;
-        }
+        this.sourceId = creep.pos.findClosestByRange(FIND_SOURCES,{
+            filter: function (source): boolean { 
+                return source.energy > 0
+            }
+        })?.id;
+        // if(!!!this.sourceId){
+        //     this.sourceId = creep.pos.findClosestByRange(FIND_SOURCES,{
+        //         filter: function (source): boolean { 
+        //             return source.energy > 0
+        //         }
+        //     })?.id;
+        // }
         if(!!this.sourceId){
             const source = Game.getObjectById(this.sourceId);
             if(!!source){
@@ -41,7 +50,7 @@ export class Harvester implements ICreepConfig{
             this.target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
                 filter: function (structure): boolean { 
                         return (structure.structureType == STRUCTURE_TOWER
-                            || structure.structureType == STRUCTURE_SPAWN 
+                            ||  structure.structureType == STRUCTURE_SPAWN 
                             ||  structure.structureType == STRUCTURE_EXTENSION) 
                             &&  structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
                     }});

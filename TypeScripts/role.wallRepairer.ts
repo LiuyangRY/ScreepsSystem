@@ -22,14 +22,12 @@ export class WallRepairer implements ICreepConfig{
 
     // 采集能量
     Source(creep: Creep): any {
-        if(!!!this.source){
-            this.source = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: function (structure): boolean { 
-                    return (structure.structureType == STRUCTURE_CONTAINER) 
-                        &&  structure.store.getCapacity(RESOURCE_ENERGY) > 0
-                }
-            });
-        }
+        this.source = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: function (structure): boolean { 
+                return (structure.structureType == STRUCTURE_CONTAINER) 
+                    &&  structure.store.getCapacity(RESOURCE_ENERGY) > 0
+            }
+        });
         if(!!this.source){
             if (creep.withdraw(this.source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(this.source, { visualizePathStyle: { stroke: this.pathColor }});
