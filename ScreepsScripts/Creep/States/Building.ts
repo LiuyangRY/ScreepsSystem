@@ -1,22 +1,22 @@
 import { IdleState, MovingState, Replay, ReplayFunction, Resolve, ResolveAndReplay, StateResolver } from "./CreepState";
 
 // 建造
-export function Building(creep: Creep, stateResolver: StateResolver): void {
+export function Building(creep: Creep, state: StateResolver): void {
     if(creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0){
-        ResolveAndReplay(creep, stateResolver);
+        ResolveAndReplay(creep, state);
         return;
     }
     if(!creep.memory.construction){
         creep.memory.construction = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES)?.id;
     }
     if(!creep.memory.construction){
-        ResolveAndReplay(creep, { nextState: IdleState, Replay: stateResolver.Replay });
+        ResolveAndReplay(creep, { nextState: IdleState, Replay: state.Replay });
         return;
     }
     const construction = Game.getObjectById(creep.memory.construction as Id<ConstructionSite>);
     if(!construction){
         delete creep.memory.construction;
-        ResolveAndReplay(creep, stateResolver);
+        ResolveAndReplay(creep, state);
         return;
     }
     const buildResult = creep.build(construction);
@@ -24,7 +24,7 @@ export function Building(creep: Creep, stateResolver: StateResolver): void {
         case OK:
             break;
         case ERR_NOT_IN_RANGE:
-            GoToConstruction(creep, construction, stateResolver.Replay);
+            GoToConstruction(creep, construction, state?.Replay);
             break;
     }
 }
