@@ -27,7 +27,7 @@ export function StoringEnergy(creep: Creep, state: StateResolver): void{
             GoToStorage(creep, assignedStorage,  state.Replay);
             break;
         case ERR_FULL:
-            AssignStorage(creep, state?Replay);
+            AssignStorage(creep, state?.Replay);
             break;
     }
 }
