@@ -75,7 +75,7 @@ export function CreepManager(): void {
             DrawSpawning(spawn);
         }else{
             for(const _role of creepRoleOrder){
-                const role = CreepRole[_role];
+                const role = _role as CreepRole;
                 const amountOfLive = _.filter(Game.creeps, creep => !!creep && creep.memory.role == role)
                     .filter(creep => creep.memory.room === spawn.room.name)
                     .length;
