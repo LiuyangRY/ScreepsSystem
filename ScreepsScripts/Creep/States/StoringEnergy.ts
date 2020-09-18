@@ -13,7 +13,7 @@ export function StoringEnergy(creep: Creep, state: StateResolver): void{
         }
     }
     const assignedStorage = Game.getObjectById(creep.memory.storage as Id<StructureSpawn | StructureExtension | StructureLink | StructureStorage | StructureContainer>);
-    if(!!assignedStorage){
+    if(!assignedStorage){
         AssignStorage(creep, state?.Replay);
         return;
     }

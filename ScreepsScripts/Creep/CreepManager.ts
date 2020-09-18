@@ -83,13 +83,13 @@ export function CreepManager(): void {
                     for(const creepDef of creepDefinition[role]){
                         const availableEnergy = spawn.room.energyAvailable;
                         if(availableEnergy >= creepDef.cost && !spawn.spawning){
-                            spawn.spawnCreep(creepDef.bodyPartsComponents, `${role}:${Game.time}`, {
+                            spawn.spawnCreep(creepDef.bodyPartsComponents, `${spawn.name}-${role}:${Game.time}`, {
                                 memory: {
                                     role: role,
                                     room: spawn.room.name,
                                     param: {}
                                 }
-                            })
+                            });
                         }
                     }
                 }
@@ -101,7 +101,7 @@ export function CreepManager(): void {
     function DrawSpawning(spawn: StructureSpawn): void {
         if(spawn.spawning){
             const spawningCreep = Game.creeps[spawn.spawning.name];
-            const role = spawningCreep.memory.role;
+            const role = spawningCreep.memory.role as CreepRole;
             const creepSymbol = creepSymbols[role];
             spawn.room.visual.text(
                 creepSymbol,
