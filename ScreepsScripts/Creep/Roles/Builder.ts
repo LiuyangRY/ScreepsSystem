@@ -1,4 +1,4 @@
-import { BuildingState, CreepState, IdleState, MovingState, RefillingState, SpawningState, StateResolver } from "../States/CreepState";
+import { BuildingState, CreepState, IdleState, ResolveAndReplay, MovingState, RefillingState, SpawningState, StateResolver } from "../States/CreepState";
 import { Refilling } from "../States/Refilling";
 import { Move } from "../States/Moving"
 import { Building } from "../States/Building"
@@ -10,7 +10,7 @@ export function BuilderJob(creep: Creep): void {
     }
     switch (creep.memory.state) {
         case SpawningState:
-            Initialize(creep, { nextState: MovingState });
+            Initialize(creep, { nextState: RefillingState });
             break;
         case RefillingState:
             Refilling(creep, { nextState: BuildingState });
@@ -41,5 +41,8 @@ function StateAfterMoving(creep: Creep) {
 
 // 初始化
 function Initialize(creep: Creep, state: StateResolver): void {
-
+    if(creep.spawning){
+        return;
+    }
+    ResolveAndReplay(creep, state);
 }

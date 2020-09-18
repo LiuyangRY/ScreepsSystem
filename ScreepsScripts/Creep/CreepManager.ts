@@ -29,8 +29,8 @@ const creepRoleOrder = [
 // Creep 结构配置
 const creepDefinition: Record<CreepRole, CreepDefinition[]> = {
     [CreepRole.HARVESTER]:[
-        new CreepDefinition(CreepRole.HARVESTER, [MOVE, MOVE, MOVE, MOVE, WORK, WORK, CARRY, CARRY], 500),
-        new CreepDefinition(CreepRole.HARVESTER, [MOVE, MOVE, MOVE, WORK, CARRY], 300),
+        new CreepDefinition(CreepRole.HARVESTER, [MOVE, MOVE, MOVE, WORK, WORK, CARRY, CARRY, CARRY], 500),
+        new CreepDefinition(CreepRole.HARVESTER, [MOVE, MOVE, MOVE, WORK, CARRY, CARRY, CARRY], 400),
         new CreepDefinition(CreepRole.HARVESTER, [MOVE, WORK, CARRY], 200),
     ],
     [CreepRole.UPGRADER]: [
@@ -40,13 +40,14 @@ const creepDefinition: Record<CreepRole, CreepDefinition[]> = {
     ],
     [CreepRole.BUILDER]: [
       new CreepDefinition(CreepRole.BUILDER, [MOVE, MOVE, MOVE, MOVE, WORK, WORK, CARRY, CARRY, CARRY], 550),
-      new CreepDefinition(CreepRole.BUILDER, [MOVE, MOVE, WORK, CARRY, CARRY], /* 300 */500),
+      new CreepDefinition(CreepRole.BUILDER, [MOVE, MOVE, WORK, CARRY, CARRY], 300),
+      new CreepDefinition(CreepRole.BUILDER, [MOVE, WORK, CARRY], 200),
     ],
     [CreepRole.MINER]: [
       new CreepDefinition(CreepRole.MINER, [MOVE, WORK, WORK, WORK, WORK, WORK], 550),
     ],
     [CreepRole.CARRIER]: [
-      new CreepDefinition(CreepRole.CARRIER, [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], 550),
+      new CreepDefinition(CreepRole.CARRIER, [MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], 500),
     ]
 };
 

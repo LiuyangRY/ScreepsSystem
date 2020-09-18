@@ -29,7 +29,25 @@ export function Refilling(creep: Creep, state: StateResolver): void {
                 console.log(`Refilling: withdraw result ${result}`);
                 break;
         }
+    }else{
+        const source = GetSource(creep);
+        if(!!source){
+            creep.say("🥾");
+            if(creep.harvest(source) == ERR_NOT_IN_RANGE){
+                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+        }
     }
+}
+
+// 发现源
+function GetSource(creep: Creep): Source | undefined {
+    const sources = creep.room.find(FIND_SOURCES)
+        .sort((source1, source2) => creep.pos.getRangeTo(source1) - creep.pos.getRangeTo(source2))
+    if(!!sources && sources.length > 0){
+        return sources[0];
+    }
+    return undefined;
 }
 
 // 前往存储设施
