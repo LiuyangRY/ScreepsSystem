@@ -1,3 +1,4 @@
+import { FindClosestEnergyStorage, EnergySource, RefillCreep } from "./CommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Upgrader implements ICreepConfig{
@@ -8,41 +9,38 @@ export class Upgrader implements ICreepConfig{
      */
     constructor(color: string = "#3ac98f") {
         this.pathColor = color;
-        this.source = undefined;
+        this.validityCount = 5;
     }
 
     // 路径颜色
     pathColor: string;
 
-    // 控制器
-    controller: StructureController | undefined;
-
-    // 能量源
-    source: Structure<StructureConstant> | undefined | null;
+    // 能量源有效期
+    validityCount: number;
 
     // 采集能量矿
     Source(creep: Creep): any {
-        this.source = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function (structure): boolean { 
-                return (structure.structureType == STRUCTURE_CONTAINER) 
-                    &&  structure.store[RESOURCE_ENERGY] > 0
+        if(!!!creep.memory.source || !!!creep.memory.sourceValidatedCount){
+            // 寻找最近的能量存储设施、能量源或掉落的能量
+            const energySource: EnergySource = FindClosestEnergyStorage(creep);
+            if(!!energySource){
+                creep.memory.source = energySource.id;
+                creep.memory.energyTakeMethod = energySource.take;
+                creep.memory.sourceValidatedCount = this.validityCount;
+            }else{
+                console.log(`Creep: ${creep.name} 的采集目标不存在。`)
+                return;
             }
-        });
-        if(!!this.source){
-            if (creep.withdraw(this.source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(this.source, { visualizePathStyle: { stroke: this.pathColor }});
-            }
+        }else{
+            RefillCreep(creep, this.pathColor);
         }
     }
 
     // 升级控制器
     Target(creep: Creep): any {
-        if(!!!this.controller){
-            this.controller = creep.room.controller;
-        }
-        if(!!this.controller){
-            if(creep.upgradeController(this.controller) == ERR_NOT_IN_RANGE){
-                creep.moveTo(this.controller, { visualizePathStyle: { stroke: this.pathColor }});
+        if(!!creep.room.controller){
+            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE){
+                creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: this.pathColor }});
             }
         }
     }
@@ -57,6 +55,7 @@ export class Upgrader implements ICreepConfig{
         // creep 身上能量已满且 creep 之前的工作状态为“不工作”
         if(creep.store[RESOURCE_ENERGY] >= creep.store.getCapacity() && !!!creep.memory.working){
             creep.memory.working = true;
+            creep.memory.sourceValidatedCount = !!creep.memory.sourceValidatedCount ? creep.memory.sourceValidatedCount - 1 : this.validityCount;
             creep.say("🚧 执行升级工作。");
         }
         return creep.memory.working;

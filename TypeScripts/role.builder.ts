@@ -1,3 +1,4 @@
+import { EnergySource, FindClosestEnergyStorage, RefillCreep } from "./CommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Builder implements ICreepConfig{
@@ -8,59 +9,55 @@ export class Builder implements ICreepConfig{
      */
     constructor(color: string = "#cbcb41") {
         this.pathColor = color;
-        this.source = undefined;
-        this.target = null;
+        this.validityCount = 50;
     }
 
     // 路径颜色
     pathColor: string;
 
-    // 能量源
-    source: Source | undefined | null;
-
-    target: ConstructionSite<BuildableStructureConstant> | null;
+    // 能量源有效期
+    validityCount: number;
 
     // 采集能量
     Source(creep: Creep): any {
-        this.source = creep.pos.findClosestByRange(FIND_SOURCES,{
-            filter: function (source): boolean { 
-                return source.energy > 0
+        if(!!!creep.memory.source || !!!creep.memory.sourceValidatedCount){
+            // 寻找最近的能量存储设施、能量源或掉落的能量
+            const energySource: EnergySource = FindClosestEnergyStorage(creep);
+            if(!!energySource){
+                creep.memory.source = energySource.id;
+                creep.memory.energyTakeMethod = energySource.take;
+                creep.memory.sourceValidatedCount = this.validityCount;
+            }else{
+                console.log(`Creep: ${creep.name} 的采集目标不存在。`)
+                return;
             }
-        });
-        // if(!!!this.sourceId){
-        //     this.sourceId = creep.pos.findClosestByRange(FIND_SOURCES,{
-        //         filter: function (source): boolean { 
-        //             return source.energy > 0
-        //         }
-        //     })?.id;
-        // }
-        if(!!this.source){
-            if (creep.harvest(this.source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(this.source, { visualizePathStyle: { stroke: this.pathColor }});
-            }
+        }else{
+            RefillCreep(creep, this.pathColor);
         }
     }
 
     // 建造建筑
     Target(creep: Creep): any {
-        if(!!!this.target){
-            const targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            if(!!targets && targets.length > 0){
-                this.target = targets[0];
+        if(!!!creep.memory.construction){
+            creep.memory.construction = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)?.id;
+            if(!!!creep.memory.construction){
+                if(!!creep.room.controller){
+                    creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: this.pathColor }});
+                }
             }
-            // else{
-            //     creep.say(`🚧 当前没有建造工作，将角色切换为升级者。`);
-            //     creep.memory.role = "repairer";
-            // }
-        }
-        
-        if(!!this.target){
-            if(creep.build(this.target) == ERR_NOT_IN_RANGE){
-                creep.moveTo(this.target, { visualizePathStyle: { stroke: this.pathColor }});
+        }else{
+            const construction = Game.getObjectById(creep.memory.construction as Id<ConstructionSite>);
+            if(!!!construction){
+                delete creep.memory.construction;
+                return;
             }
-            if(this.target.progress == this.target.progressTotal){
-                creep.say(`🚧 ${this.target.structureType}建造工作已完成。`);
-                this.target = null;
+            // 建造
+            if(creep.build(construction) == ERR_NOT_IN_RANGE){
+                creep.moveTo(construction, { visualizePathStyle: { stroke: this.pathColor }});
+            }
+            if(construction.progress == construction.progressTotal){
+                creep.say(`🚧 ${construction.structureType}建造工作已完成。`);
+                creep.memory.construction = null;
             }
         }
     }
@@ -75,6 +72,7 @@ export class Builder implements ICreepConfig{
         // creep 身上能量已满且 creep 之前的工作状态为“不工作”
         if(creep.store[RESOURCE_ENERGY] >= creep.store.getCapacity() && !!!creep.memory.working){
             creep.memory.working = true;
+            creep.memory.sourceValidatedCount = !!creep.memory.sourceValidatedCount ? creep.memory.sourceValidatedCount - 1 : this.validityCount;
             creep.say("🚧 执行建造工作。");
         }
         return creep.memory.working;
