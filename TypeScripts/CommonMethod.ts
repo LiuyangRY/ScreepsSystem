@@ -30,7 +30,7 @@ export function FindSpawn(creep: Creep): Structure | undefined{
 }
 
 // 寻找 Creep 最近的能量存储设施
-export function FindClosestEnergyStorage(creep: Creep): EnergySource {
+export function FindClosestEnergyStorage(creep: Creep): EnergySource | undefined {
     const pos = creep.pos;
     const room = creep.room;
     const structures = room.find(FIND_STRUCTURES, {
@@ -53,6 +53,9 @@ export function FindClosestEnergyStorage(creep: Creep): EnergySource {
         }
     }) as RoomObject[];
     const closestPath = pos.findClosestByPath(structures.concat(resources).concat(sources)) as Structure | Source | Resource;
+    if(!!!closestPath){
+        return undefined;
+    }
     const takeMethod = ObtainTakeMethod(closestPath);
     return {
         id: closestPath.id,
@@ -100,26 +103,33 @@ export function FindClostestStorageForHarvesting(creep: Creep): Structure | unde
 
 // 为 Creep 填充能量
 export function RefillCreep(creep: Creep, pathColor: string): void {
-    let foundEnergyStorage = {} as EnergySource;
+    let memoryEnergyStorage = {} as EnergySource;
     if(!!creep.memory.source && !!creep.memory.energyTakeMethod){
-        foundEnergyStorage.id = creep.memory.source as Id<Structure<StructureConstant> | Source | Resource<ResourceConstant>>;
-        foundEnergyStorage.take = creep.memory.energyTakeMethod as Harvest | Pickup | Withdraw;
+        memoryEnergyStorage.id = creep.memory.source as Id<Structure<StructureConstant> | Source | Resource<ResourceConstant>>;
+        memoryEnergyStorage.take = creep.memory.energyTakeMethod as Harvest | Pickup | Withdraw;
     }
-    if(!!!foundEnergyStorage || !!!Game.getObjectById(foundEnergyStorage.id) || IsEmpty(foundEnergyStorage)){
-        foundEnergyStorage = FindClosestEnergyStorage(creep);
+    if(!!!memoryEnergyStorage || !!!Game.getObjectById(memoryEnergyStorage.id) || IsEmpty(memoryEnergyStorage)){
+        let foundEnergyStorage: EnergySource | undefined = FindClosestEnergyStorage(creep);
+        if(!!!foundEnergyStorage){
+            console.log("Creep: " + creep.name + " 找不到可供使用的能量存储设施。");
+            return;
+        }
         creep.memory.source = foundEnergyStorage.id;
         creep.memory.energyTakeMethod = foundEnergyStorage.take;
+        memoryEnergyStorage = foundEnergyStorage;
     }
-    if(!!!foundEnergyStorage){
+    if(!!!memoryEnergyStorage){
         console.log("Creep: " + creep.name + " 找不到可供使用的能量。");
+        creep.memory.source = undefined;
+        creep.memory.energyTakeMethod = undefined;
         return;
     }
-    const object = Game.getObjectById(foundEnergyStorage.id);
-    if(!!!foundEnergyStorage.take){
+    const object = Game.getObjectById(memoryEnergyStorage.id);
+    if(!!!memoryEnergyStorage.take){
         console.log("Creep: " + creep.name + " 获取能量的方法不存在。")
         return;
     }
-    switch (foundEnergyStorage.take) {
+    switch (memoryEnergyStorage.take) {
         case "harvest":
             if(creep.harvest(object as Source) == ERR_NOT_IN_RANGE){
                 creep.moveTo(object as Source, { visualizePathStyle: { stroke: pathColor }});

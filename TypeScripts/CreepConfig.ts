@@ -23,9 +23,9 @@ export class CreepConfigs {
                 // 更新换代测试角色
                 "repairerV2": new CreepSpawningInfo("repairerV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
                 "wallRepairerV2": new CreepSpawningInfo("wallRepairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
-                "harvesterV2": new CreepSpawningInfo("harvesterV2", [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 2),
+                "harvesterV2": new CreepSpawningInfo("harvesterV2", [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 3),
                 "builderV2": new CreepSpawningInfo("builderV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
-                "upgraderV2": new CreepSpawningInfo("upgraderV2", [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 1),
+                "upgraderV2": new CreepSpawningInfo("upgraderV2", [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 2),
         }
     }
 

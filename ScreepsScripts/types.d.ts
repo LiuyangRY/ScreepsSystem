@@ -6,8 +6,6 @@ interface CreepMemory {
     source?: string;
     room: string;
     role: string;
-    state?: string;
-    lastState?: string;
     targetPos?: {
         x: number,
         y: number,
