@@ -43,7 +43,7 @@ export class Repairer implements ICreepConfig{
             });
             if(!!targets){
                 // 找出血量百分比最低的建筑作为目标
-                for(let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
+                for(let percentage = 0.1; percentage <= 1; percentage = percentage + 0.1){
                     this.target = creep.pos.findClosestByPath(targets, {
                         filter: (structure: Structure) => (structure.hits / structure.hitsMax < percentage)
                     });

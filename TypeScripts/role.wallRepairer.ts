@@ -35,15 +35,20 @@ export class WallRepairer implements ICreepConfig{
         }
     }
 
-    // 维修墙或容器
+    // 维修墙、路或者容器
     Target(creep: Creep): any {
         if(!!!this.target){
             const targets = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure: Structure) => (structure.hits < structure.hitsMax ) && (structure.structureType == STRUCTURE_WALL || structure.structureType == STRUCTURE_CONTAINER)
+                filter: (structure: Structure) => (structure.hits < structure.hitsMax ) && 
+                    (
+                        structure.structureType == STRUCTURE_ROAD ||
+                        structure.structureType == STRUCTURE_WALL || 
+                        structure.structureType == STRUCTURE_CONTAINER
+                    )
             });
             if(!!targets){
                 // 找出血量百分比最低的建筑作为目标
-                for(let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
+                for(let percentage = 0.1; percentage <= 1; percentage = percentage + 0.1){
                     this.target = creep.pos.findClosestByPath(targets, {
                         filter: (wall: StructureWall) => (wall.hits / wall.hitsMax < percentage)
                     });
