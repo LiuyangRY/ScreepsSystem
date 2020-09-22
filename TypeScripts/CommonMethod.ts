@@ -146,7 +146,7 @@ export function RefillCreep(creep: Creep, pathColor: string): void {
             }
             break;
         default:
-            console.log("Creep: " + creep.name + " 获取能量的方法：" + foundEnergyStorage.take +"不存在。")
+            console.log("Creep: " + creep.name + " 获取能量的方法：" + memoryEnergyStorage.take +"不存在。")
             break;
     }
 }
