@@ -9,7 +9,7 @@ export class Harvester implements ICreepConfig{
      */
     constructor(color: string = "#6a9955") {
         this.pathColor = color;
-        this.validityCount = 50;
+        this.validityCount = 10;
     }
 
     // 路径颜色
@@ -35,6 +35,7 @@ export class Harvester implements ICreepConfig{
                 return;
             }
         }else{
+            creep.memory.sourceValidatedCount = creep.memory.sourceValidatedCount - 1;
             const source = Game.getObjectById(creep.memory.source as Id<Source>);
             if(!!source){
                 if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
@@ -81,7 +82,6 @@ export class Harvester implements ICreepConfig{
         // creep 身上能量已满且 creep 之前的工作状态为“不工作”
         if(creep.store[RESOURCE_ENERGY] >= creep.store.getCapacity() && !!!creep.memory.working){
             creep.memory.working = true;
-            creep.memory.sourceValidatedCount = !!creep.memory.sourceValidatedCount ? creep.memory.sourceValidatedCount - 1 : this.validityCount;
             creep.say("🚧 执行存储工作。");
         }
         return creep.memory.working;

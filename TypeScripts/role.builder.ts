@@ -9,7 +9,7 @@ export class Builder implements ICreepConfig{
      */
     constructor(color: string = "#cbcb41") {
         this.pathColor = color;
-        this.validityCount = 50;
+        this.validityCount = 10;
     }
 
     // 路径颜色
@@ -22,7 +22,7 @@ export class Builder implements ICreepConfig{
     Source(creep: Creep): any {
         if(!!!creep.memory.source || !!!creep.memory.sourceValidatedCount){
             // 寻找最近的能量存储设施、能量源或掉落的能量
-            const energySource: EnergySource = FindClosestEnergyStorage(creep);
+            const energySource: EnergySource | undefined = FindClosestEnergyStorage(creep);
             if(!!energySource){
                 creep.memory.source = energySource.id;
                 creep.memory.energyTakeMethod = energySource.take;
@@ -32,6 +32,7 @@ export class Builder implements ICreepConfig{
                 return;
             }
         }else{
+            creep.memory.sourceValidatedCount = creep.memory.sourceValidatedCount - 1;
             RefillCreep(creep, this.pathColor);
         }
     }
@@ -72,7 +73,6 @@ export class Builder implements ICreepConfig{
         // creep 身上能量已满且 creep 之前的工作状态为“不工作”
         if(creep.store[RESOURCE_ENERGY] >= creep.store.getCapacity() && !!!creep.memory.working){
             creep.memory.working = true;
-            creep.memory.sourceValidatedCount = !!creep.memory.sourceValidatedCount ? creep.memory.sourceValidatedCount - 1 : this.validityCount;
             creep.say("🚧 执行建造工作。");
         }
         return creep.memory.working;

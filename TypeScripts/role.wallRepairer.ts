@@ -57,11 +57,6 @@ export class WallRepairer implements ICreepConfig{
                     }
                 }
             }
-            // else{
-            //     this.target == null;
-            //     creep.say(`🚧 当前没有维修工作，将角色切换为升级者。`);
-            //     creep.memory.role = "upgrader";
-            // }
         }
         
         if(!!this.target){
