@@ -186,7 +186,7 @@ declare const enum _RM_IS {
     SPAWNS      = "sp",
     STORAGE     = "s",
     TERMINAL    = "e",
-    WALSS       = "w",
+    WALLS       = "w",
     RAMPARTS    = "r"
 }
 
