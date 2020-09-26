@@ -33,11 +33,19 @@ export function FindSpawn(creep: Creep): Structure | undefined{
 export function FindClosestEnergyStorage(creep: Creep): EnergySource | undefined {
     const pos = creep.pos;
     const room = creep.room;
+    const ownedStructures = room.find(FIND_MY_STRUCTURES, {
+        filter: (structure: AnyOwnedStructure) => {
+            return (
+                (structure.structureType == STRUCTURE_LINK) &&
+                structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+            )
+        }
+    }) as RoomObject[];
     const structures = room.find(FIND_STRUCTURES, {
         filter: (structure: AnyStructure) => {
             return (
                 (structure.structureType == STRUCTURE_CONTAINER ||
-                structure.structureType == STRUCTURE_STORAGE) &&
+                structure.structureType == STRUCTURE_STORAGE ) &&
                 structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
             )
         }
@@ -52,7 +60,7 @@ export function FindClosestEnergyStorage(creep: Creep): EnergySource | undefined
             return source.energy > 0
         }
     }) as RoomObject[];
-    const closestPath = pos.findClosestByPath(structures.concat(resources).concat(sources)) as Structure | Source | Resource;
+    const closestPath = pos.findClosestByPath(ownedStructures.concat(structures).concat(resources).concat(sources)) as Structure | Source | Resource;
     if(!!!closestPath){
         return undefined;
     }

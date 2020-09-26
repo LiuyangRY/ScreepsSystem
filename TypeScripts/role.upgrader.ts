@@ -9,7 +9,7 @@ export class Upgrader implements ICreepConfig{
      */
     constructor(color: string = "#3ac98f") {
         this.pathColor = color;
-        this.validityCount = 10;
+        this.validityCount = 1;
     }
 
     // 路径颜色

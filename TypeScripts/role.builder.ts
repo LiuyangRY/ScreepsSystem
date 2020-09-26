@@ -9,7 +9,7 @@ export class Builder implements ICreepConfig{
      */
     constructor(color: string = "#cbcb41") {
         this.pathColor = color;
-        this.validityCount = 10;
+        this.validityCount = 1;
     }
 
     // 路径颜色
