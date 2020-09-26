@@ -3,6 +3,7 @@ import { Builder } from "./role.builder";
 import { Upgrader } from "./role.upgrader";
 import { Repairer} from "./role.repairer"
 import { WallRepairer } from "./role.wallRepairer";
+import { Claimer } from "./role.claimer";
 
 export class CreepConfigs {
     creepRoles: string[];
@@ -32,7 +33,7 @@ export class CreepConfigs {
 
     Work(creep: Creep){
         let working: boolean = false;
-        let worker: Harvester | Builder | Upgrader | Repairer | null = null;
+        let worker: Harvester | Builder | Upgrader | Repairer | Claimer | null = null;
         switch (creep.memory["role"]) {
             case "harvester":
             case "harvesterV2":
@@ -53,6 +54,9 @@ export class CreepConfigs {
             case "wallRepairer":
             case "wallRepairerV2":
                 worker = new WallRepairer();
+                break;
+            case "claimer":
+                worker = new Claimer();
                 break;
         }
         working = worker?.Switch ? worker.Switch(creep) : true;

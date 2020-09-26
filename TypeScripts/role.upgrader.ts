@@ -9,30 +9,24 @@ export class Upgrader implements ICreepConfig{
      */
     constructor(color: string = "#3ac98f") {
         this.pathColor = color;
-        this.validityCount = 1;
     }
 
     // 路径颜色
     pathColor: string;
 
-    // 能量源有效期
-    validityCount: number;
-
     // 采集能量矿
     Source(creep: Creep): any {
-        if(!!!creep.memory.source || !!!creep.memory.sourceValidatedCount){
+        if(!!!creep.memory.source){
             // 寻找最近的能量存储设施、能量源或掉落的能量
             const energySource: EnergySource | undefined = FindClosestEnergyStorage(creep);
             if(!!energySource){
                 creep.memory.source = energySource.id;
                 creep.memory.energyTakeMethod = energySource.take;
-                creep.memory.sourceValidatedCount = this.validityCount;
             }else{
                 console.log(`Creep: ${creep.name} 的采集目标不存在。`)
                 return;
             }
         }else{
-            creep.memory.sourceValidatedCount = creep.memory.sourceValidatedCount - 1;
             RefillCreep(creep, this.pathColor);
         }
     }

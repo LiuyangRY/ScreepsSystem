@@ -1,5 +1,5 @@
 /**
- * creep配置项
+ * creep 配置项
  * @property prepare 准备阶段执行的方法
  * @property isReady 是否准备完成
  * @property source A阶段执行的方法
