@@ -1,5 +1,3 @@
-import { Mem } from "../../../Templete/screeps-typescript-master/src-overmind/memory/Memory";
-
 // 操作模式
 type OperationMode = "Manual" | "SemiAutomatic" | "Automatic";
 
