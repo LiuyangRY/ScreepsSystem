@@ -1,7 +1,4 @@
-// 不属于任何地方的随机工具方法
-
-import { alignedNewline, bullet } from "../../../Templete/screeps-typescript-master/src-overmind/utilities/stringConstants";
-import { compactCoordName, coordName } from "../../../Templete/screeps-typescript-master/src-overmind/utilities/utils";
+import { alignedNewLine, bullet } from "./StringConstants";
 
 // 获取所有殖民的房间
 export function GetAllColonyRooms(): Room[] {
@@ -91,9 +88,9 @@ export function bulleted(text: string[], aligned = true, startWithNewLine = true
     if(text.length == 0) {
         return "";
     }
-    const prefix = (startWithNewLine ? (aligned ? alignedNewline : "\n") : "") + bullet;
+    const prefix = (startWithNewLine ? (aligned ? alignedNewLine : "\n") : "") + bullet;
     if(aligned) {
-        return prefix + text.join(alignedNewline + bullet);
+        return prefix + text.join(alignedNewLine + bullet);
     }else {
         return prefix + text.join("\n" + bullet);
     }
@@ -121,7 +118,7 @@ export function ToColumns(obj: { [key: string]: string}, opts = {} as ToColumnOp
 }
 
 // 合并一些存储的对象，将重叠的键相加。在计算能量资源的时候很有用。
-export function MergeSum(objects: { [key: srting]: number | undefined }[]): { [key: string]: number} {
+export function MergeSum(objects: { [key: string]: number | undefined }[]): { [key: string]: number} {
     const result : { [key: string]: number } = null;
     for(const object of objects) {
         for(const key in object) {
@@ -254,7 +251,7 @@ export function Clone2DArray<T>(a: T[][]): T[][] {
 }
 
 // 将一个正方形矩形顺时针旋转90度
-function RotateMatrix<T>(matrix: T[][]): void {
+function RotatedMatrix<T>(matrix: T[][]): void {
     // 反转行
     matrix.reverse();
     // 交换对称元素
@@ -271,7 +268,7 @@ function RotateMatrix<T>(matrix: T[][]): void {
 export function RotateMatrix<T>(matrix: T[][], clockwiseTurns: 0 | 1 | 2 | 3): T[][] {
     const mat = Clone2DArray(matrix);
     for(let i = 0; i < clockwiseTurns; i++) {
-        RotateMatrix(mat);
+        RotatedMatrix(mat);
     }
     return mat;
 }

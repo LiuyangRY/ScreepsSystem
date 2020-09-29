@@ -21,7 +21,7 @@ interface Memory {
     pathing: PathingMemory;
     settings: {
         signature: string;
-        operationMode: operationMode;
+        operationMode: OperationMode;
         log: LoggerMemory;
         enableVisuals: boolean;
     };

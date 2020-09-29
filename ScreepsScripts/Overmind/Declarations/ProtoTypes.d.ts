@@ -87,7 +87,7 @@ interface Room {
     extractor: StructureExtractor | undefined;
     nuker: StructureNuker | undefined;
     repairables: Structure[];
-    rechargeables: rechargeObjectType[];
+    rechargeables: RechargeObjectType[];
     sources: Source[];
     mineral: Mineral | undefined;
     constructionSites: ConstructionSite[];
