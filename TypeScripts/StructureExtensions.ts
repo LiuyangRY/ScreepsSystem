@@ -9,6 +9,6 @@ const StructureExtensions = {
 }
 
 
-export function MountCreep() {
+export function MountStructure() {
     _.assign(Structure.prototype, StructureExtensions);
 }

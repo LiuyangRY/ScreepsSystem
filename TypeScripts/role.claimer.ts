@@ -1,4 +1,4 @@
-import { EnergySource, FindClosestEnergyStorage, RefillCreep } from "./CommonMethod";
+import { LongDistanceMove } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Claimer implements ICreepConfig{
@@ -7,7 +7,7 @@ export class Claimer implements ICreepConfig{
      * Builder 类的构造函数
      * @property color creep 路径的颜色
      */
-    constructor(color: string = "#a53f62") {
+    constructor(color: string = "#b78a94") {
         this.pathColor = color;
         this.targetRoom = "W22N14";
     }
@@ -20,16 +20,7 @@ export class Claimer implements ICreepConfig{
 
     // 前往目标房间
     Source(creep: Creep): any {
-        if(!!this.targetRoom && this.targetRoom.length > 0){
-            // 要占领的房间
-            const room = Game.rooms[this.targetRoom];
-            // 如果该房间不存在就先往房间走
-            if (!!!room) {
-                creep.moveTo(new RoomPosition(25, 25, this.targetRoom), { visualizePathStyle: { stroke: "#b78a94" } });
-            }
-        }else{
-            return;
-        }
+        LongDistanceMove(creep, this.targetRoom, this.pathColor);
     }
 
     // 声明房间
@@ -39,7 +30,7 @@ export class Claimer implements ICreepConfig{
             // 如果房间存在了就说明已经进入了该房间
             // 移动到房间的控制器并占领
             if (creep.claimController(room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(room.controller, { visualizePathStyle: { stroke: "#b78a94" } })
+                creep.moveTo(room.controller, { visualizePathStyle: { stroke: this.pathColor } })
             }
         }
     }

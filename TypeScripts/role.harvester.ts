@@ -1,4 +1,4 @@
-import { FindClostestStorageForHarvesting, FindSpawn, IsEmpty, ObtainTakeMethod, SetTargetStorage } from "./CommonMethod";
+import { FindClostestStorageForStoring, IsFull, ObtainTakeMethod } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Harvester implements ICreepConfig{
@@ -9,18 +9,14 @@ export class Harvester implements ICreepConfig{
      */
     constructor(color: string = "#6a9955") {
         this.pathColor = color;
-        this.validityCount = 10;
     }
 
     // 路径颜色
     pathColor: string;
 
-    // 能量源有效期
-    validityCount: number;
-
     // 采集能量矿
     Source(creep: Creep): any {
-        if(!!!creep.memory.source || !!!creep.memory.sourceValidatedCount){
+        if(!!!creep.memory.source){
             // 寻找最近的能量存储设施、能量源或掉落的能量
             const source: Source | null = creep.pos.findClosestByRange(FIND_SOURCES,{
                 filter: function (source): boolean { 
@@ -29,13 +25,11 @@ export class Harvester implements ICreepConfig{
             if(!!source){
                 creep.memory.source = source.id;
                 creep.memory.energyTakeMethod = "harvest";
-                creep.memory.sourceValidatedCount = this.validityCount;
             }else{
                 console.log(`Creep: ${creep.name} 的采集目标不存在。`)
                 return;
             }
         }else{
-            creep.memory.sourceValidatedCount = creep.memory.sourceValidatedCount - 1;
             const source = Game.getObjectById(creep.memory.source as Id<Source>);
             if(!!source){
                 if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
@@ -48,7 +42,7 @@ export class Harvester implements ICreepConfig{
     // 存储能量
     Target(creep: Creep): any {
         if (!!!creep.memory.storage) {
-            const assignedId = FindClostestStorageForHarvesting(creep);
+            const assignedId = FindClostestStorageForStoring(creep);
             if (!!!assignedId) {
                 return;
             }else{
@@ -59,7 +53,7 @@ export class Harvester implements ICreepConfig{
         if(!!assignedStorage){
             let sourceId = assignedStorage.id;
             let methodType = ObtainTakeMethod(assignedStorage);
-            if(IsEmpty({ id: sourceId, take: methodType})){
+            if(!IsFull({ id: sourceId, take: methodType})){
                 if(creep.transfer(assignedStorage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                     creep.moveTo(assignedStorage, { visualizePathStyle: { stroke: this.pathColor }});
                 }

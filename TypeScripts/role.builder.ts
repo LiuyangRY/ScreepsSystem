@@ -1,4 +1,4 @@
-import { EnergySource, FindClosestEnergyStorage, RefillCreep } from "./CommonMethod";
+import { EnergySource, FindClosestEnergyStorageForObtaining, FindFinishingConstructionSite, RefillCreep } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Builder implements ICreepConfig{
@@ -9,30 +9,28 @@ export class Builder implements ICreepConfig{
      */
     constructor(color: string = "#cbcb41") {
         this.pathColor = color;
-        this.validityCount = 1;
     }
 
     // 路径颜色
     pathColor: string;
 
-    // 能量源有效期
-    validityCount: number;
-
     // 采集能量
     Source(creep: Creep): any {
-        if(!!!creep.memory.source || !!!creep.memory.sourceValidatedCount){
+        if(!!creep.ticksToLive && creep.ticksToLive > 1450){
+            // 刚孵化出来的 Builder 每次都要寻找获取能量的容器
+            creep.memory.source = undefined;
+        }
+        if(!!!creep.memory.source){
             // 寻找最近的能量存储设施、能量源或掉落的能量
-            const energySource: EnergySource | undefined = FindClosestEnergyStorage(creep);
+            const energySource: EnergySource | undefined = FindClosestEnergyStorageForObtaining(creep);
             if(!!energySource){
                 creep.memory.source = energySource.id;
                 creep.memory.energyTakeMethod = energySource.take;
-                creep.memory.sourceValidatedCount = this.validityCount;
             }else{
                 console.log(`Creep: ${creep.name} 的采集目标不存在。`)
                 return;
             }
         }else{
-            creep.memory.sourceValidatedCount = creep.memory.sourceValidatedCount - 1;
             RefillCreep(creep, this.pathColor);
         }
     }
@@ -40,9 +38,12 @@ export class Builder implements ICreepConfig{
     // 建造建筑
     Target(creep: Creep): any {
         if(!!!creep.memory.construction){
-            creep.memory.construction = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)?.id;
+            creep.memory.construction = FindFinishingConstructionSite(creep)?.id;
+            // 更换目标建筑后，重新寻找数据源
+            creep.memory.source = undefined;
             if(!!!creep.memory.construction){
                 if(!!creep.room.controller){
+                    // 如果没有需要建造的建筑，返回到控制器待命
                     creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: this.pathColor }});
                 }
             }
@@ -55,10 +56,6 @@ export class Builder implements ICreepConfig{
             // 建造
             if(creep.build(construction) == ERR_NOT_IN_RANGE){
                 creep.moveTo(construction, { visualizePathStyle: { stroke: this.pathColor }});
-            }
-            if(construction.progress == construction.progressTotal){
-                creep.say(`🚧 ${construction.structureType}建造工作已完成。`);
-                creep.memory.construction = null;
             }
         }
     }

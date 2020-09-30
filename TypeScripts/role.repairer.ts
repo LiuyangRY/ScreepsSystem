@@ -1,66 +1,45 @@
+import { EnergySource, FindBrokenOwnedStructure, FindClosestEnergyStorageForObtaining, RefillCreep } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Repairer implements ICreepConfig{
 
     /**
-     * Repair 类的构造函数
+     * Repairer 类的构造函数
      * @property color creep 路径的颜色
      */
     constructor(color: string = "#66cc66") {
         this.pathColor = color;
-        this.source = undefined;
-        this.target = null;
     }
 
     // 路径颜色
     pathColor: string;
 
-    // 能量源
-    source: Structure<StructureConstant> | undefined | null;
-
-    target: Structure<StructureConstant> | null;
-
     // 获取能量
     Source(creep: Creep): any {
-        this.source = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: function (structure): boolean { 
-                return (structure.structureType == STRUCTURE_CONTAINER) 
-                    &&  structure.store[RESOURCE_ENERGY] > 0
+        if(!!!creep.memory.source){
+            const energySource: EnergySource | undefined = FindClosestEnergyStorageForObtaining(creep);
+            if(!!energySource){
+                creep.memory.source = energySource.id;
+                creep.memory.energyTakeMethod = energySource.take;
+            }else{
+                console.log(`Creep: ${creep.name} 的采集目标不存在。`)
+                return;
             }
-        });
-        if(!!this.source){
-            if (creep.withdraw(this.source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(this.source, { visualizePathStyle: { stroke: this.pathColor }});
-            }
+        }else {
+            RefillCreep(creep, this.pathColor);
         }
     }
 
     // 维修建筑
     Target(creep: Creep): any {
-        if(!!!this.target){
-            const targets = creep.room.find(FIND_MY_STRUCTURES, {
-                filter: (structure: Structure) => (structure.hits < structure.hitsMax ) && (structure.structureType != STRUCTURE_WALL)
-            });
-            if(!!targets){
-                // 找出血量百分比最低的建筑作为目标
-                for(let percentage = 0.1; percentage <= 1; percentage = percentage + 0.1){
-                    this.target = creep.pos.findClosestByPath(targets, {
-                        filter: (structure: Structure) => (structure.hits / structure.hitsMax < percentage)
-                    });
-                    if(!!this.target){
-                        break;
-                    }
+        const target = FindBrokenOwnedStructure(creep)?.id;
+        if(!!target){
+            const structure = Game.getObjectById(target as Id<Structure>);
+            if(!!structure) {
+                // 维修建筑
+                if(creep.repair(structure) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(structure, { visualizePathStyle: { stroke: this.pathColor }});
                 }
-            }
-        }
-        
-        if(!!this.target){
-            if(creep.repair(this.target) == ERR_NOT_IN_RANGE){
-                creep.moveTo(this.target, { visualizePathStyle: { stroke: this.pathColor }});
-            }
-            if(this.target.hits == this.target.hitsMax){
-                creep.say(`🚧 ${this.target.structureType}维修工作已完成。`);
-                this.target = null;
             }
         }
     }

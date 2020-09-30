@@ -57,32 +57,31 @@ export class SpawnSystem{
         
         
         // 如果需要孵化，指定孵化器并开始孵化
-        let spawn;
         for(let spawnName in Game.spawns){
-            spawn = Game.spawns[spawnName];
-        }
-        if(!!spawn && !spawn.spawning){
-            for(let spawnInfo in this.needSpawningInfo){
-                if(!!Game.creeps[this.CreepName]){
-                    // 从生成列表中删除已生成的Creep
-                    delete this.needSpawningInfo[spawnInfo];
-                    break;
-                }
-                // 筛选当前不需要孵化的角色
-                const targets = spawn.room.find(FIND_CONSTRUCTION_SITES);
-                if (!!!targets || targets.length == 0) {
-                    // 孵化者所在房间没有需要建造的建筑，因此不生成 Builder
-                    if(creepConfigs.creepSpawningConfig[spawnInfo].role.indexOf("builder") > 0){
+            let spawn = Game.spawns[spawnName];
+            if(!!spawn && !spawn.spawning){
+                for(let spawnInfo in this.needSpawningInfo){
+                    if(!!Game.creeps[this.CreepName]){
+                        // 从生成列表中删除已生成的Creep
                         delete this.needSpawningInfo[spawnInfo];
                         break;
                     }
-                }
-                for(let i: number = 0; i < this.needSpawningInfo[spawnInfo].SpawnCount; i++){
-                    do{
-                        this.CreepName = spawn.name + creepConfigs.creepSpawningConfig[spawnInfo].role + (new Date()).valueOf();
+                    // 筛选当前不需要孵化的角色
+                    const targets = spawn.room.find(FIND_CONSTRUCTION_SITES);
+                    if (!!!targets || targets.length == 0) {
+                        // 孵化者所在房间没有需要建造的建筑，因此不生成 Builder
+                        if(creepConfigs.creepSpawningConfig[spawnInfo].role.indexOf("builder") > 0){
+                            delete this.needSpawningInfo[spawnInfo];
+                            break;
+                        }
                     }
-                    while(!!Game.creeps[this.CreepName])
-                    spawn.spawnCreep(creepConfigs.creepSpawningConfig[spawnInfo].bodies, this.CreepName, { memory: { role: creepConfigs.creepSpawningConfig[spawnInfo].role }});
+                    for(let i: number = 0; i < this.needSpawningInfo[spawnInfo].SpawnCount; i++){
+                        do{
+                            this.CreepName = spawn.name + creepConfigs.creepSpawningConfig[spawnInfo].role + (new Date()).valueOf();
+                        }
+                        while(!!Game.creeps[this.CreepName])
+                        spawn.spawnCreep(creepConfigs.creepSpawningConfig[spawnInfo].bodies, this.CreepName, { memory: { role: creepConfigs.creepSpawningConfig[spawnInfo].role }});
+                    }
                 }
             }
         }

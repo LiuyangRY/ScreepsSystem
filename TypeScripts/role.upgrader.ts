@@ -1,4 +1,4 @@
-import { FindClosestEnergyStorage, EnergySource, RefillCreep } from "./CommonMethod";
+import { EnergySource, RefillCreep, FindClosestEnergyStorageForObtaining } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Upgrader implements ICreepConfig{
@@ -18,7 +18,7 @@ export class Upgrader implements ICreepConfig{
     Source(creep: Creep): any {
         if(!!!creep.memory.source){
             // 寻找最近的能量存储设施、能量源或掉落的能量
-            const energySource: EnergySource | undefined = FindClosestEnergyStorage(creep);
+            const energySource: EnergySource | undefined = FindClosestEnergyStorageForObtaining(creep);
             if(!!energySource){
                 creep.memory.source = energySource.id;
                 creep.memory.energyTakeMethod = energySource.take;

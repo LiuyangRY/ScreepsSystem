@@ -2,14 +2,11 @@
 interface CreepMemory {
     construction?: any;
     container?: Id<StructureContainer>;
-    sourceValidatedCount?: number;
     storage?: string;
     energyTakeMethod?: string;
     source?: string;
     room: string;
     role: string;
-    state?: string;
-    lastState?: string;
     working: boolean;
     targetPos?: {
         x: number,
@@ -35,6 +32,11 @@ interface Memory {
     sources: { [id: string]: SourceMemory };
     stats: Record<string, any>;
     mainComponentsTime: Record<string, any>;
+}
+
+// 孵化器内存扩展属性
+interface SpawnMemory {
+    
 }
 
 // global 全局扩展
