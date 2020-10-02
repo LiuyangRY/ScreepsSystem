@@ -1,21 +1,34 @@
-import { FindClostestStorageForStoring, IsFull, ObtainTakeMethod } from "./CreepCommonMethod";
+import { FindClostestStorageForStoring, IsFull, LongDistanceMove, ObtainTakeMethod } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
-export class Harvester implements ICreepConfig{
+export class LongDistanceHarvester implements ICreepConfig{
 
     /**
-     * Harvester 类的构造函数
+     * LongDistanceHarvester 类的构造函数
      * @property color creep 路径的颜色
      */
     constructor(color: string = "#6a9955") {
         this.pathColor = color;
+        this.targetRoomName = "W23N15";
     }
 
     // 路径颜色
     pathColor: string;
 
+    // 源房间名称
+    homeRoomName: string = "W23N14";
+
+    // 目标房间名称
+    targetRoomName: string | undefined;
+
     // 采集能量矿
     Source(creep: Creep): any {
+        if(!!this.targetRoomName && creep.room.name != this.targetRoomName) {
+            // 不在目标房间
+            LongDistanceMove(creep, this.targetRoomName, this.pathColor);
+            return;
+        }
+
         if(!!!creep.memory.source){
             // 寻找最近的能量存储设施、能量源或掉落的能量
             const source: Source | null = creep.pos.findClosestByRange(FIND_SOURCES,{
@@ -45,8 +58,10 @@ export class Harvester implements ICreepConfig{
 
     // 存储能量
     Target(creep: Creep): any {
-        if(creep.room.energyAvailable < creep.room.energyCapacityAvailable){
-            creep.memory.storage = undefined;
+        if(!!this.homeRoomName && creep.room.name != this.homeRoomName) {
+            // 不在源房间
+            LongDistanceMove(creep, this.homeRoomName, this.pathColor);
+            return;
         }
         if (!!!creep.memory.storage) {
             const assignedId = FindClostestStorageForStoring(creep);

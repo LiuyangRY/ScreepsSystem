@@ -4,6 +4,8 @@ import { Upgrader } from "./role.upgrader";
 import { Repairer} from "./role.repairer"
 import { WallRepairer } from "./role.wallRepairer";
 import { Claimer } from "./role.claimer";
+import { LongDistanceHarvester } from "./role.longDistanceHarvester";
+import { Attacker } from "./role.attacker";
 
 export class CreepConfigs {
     creepRoles: string[];
@@ -14,14 +16,15 @@ export class CreepConfigs {
      *  Creep 配置构造函数
      */
     constructor() {
-        this.creepRoles = ["claimer", "harvester", "builder", "upgrader", "repairer", "wallRepairer", "repairerV2", "harvesterV2", "builderV2", "upgraderV2", "wallRepairerV2"];
+        this.creepRoles = ["claimer","attacker", "harvester", "builder", "longDistanceHarvester", "upgrader", "repairer", "wallRepairer", "repairerV2", "harvesterV2", "builderV2", "upgraderV2", "wallRepairerV2"];
         this.creepSpawningConfig = {
                 "repairer": new CreepSpawningInfo("repairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 "wallRepairer": new CreepSpawningInfo("wallRepairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
-                "harvester": new CreepSpawningInfo("harvester", [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 0),
+                "longDistanceHarvester": new CreepSpawningInfo("longDistanceHarvester", [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 1),
                 "builder": new CreepSpawningInfo("builder", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 1),
                 "upgrader": new CreepSpawningInfo("upgrader", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
                 "claimer": new CreepSpawningInfo("claimer", [CLAIM, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 1),
+                "attacker": new CreepSpawningInfo("attacker", [ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 1),
                 // 更新换代测试角色
                 "repairerV2": new CreepSpawningInfo("repairerV2", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
                 "wallRepairerV2": new CreepSpawningInfo("wallRepairer", [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 0),
@@ -38,6 +41,10 @@ export class CreepConfigs {
             case "harvester":
             case "harvesterV2":
                 worker = new Harvester();
+                break;
+            
+            case "longDistanceHarvester":
+                worker = new LongDistanceHarvester();
                 break;
             case "builder":
             case "builderV2":
@@ -57,6 +64,9 @@ export class CreepConfigs {
                 break;
             case "claimer":
                 worker = new Claimer();
+                break;
+            case "attacker":
+                worker = new Attacker();
                 break;
         }
         working = worker?.Switch ? worker.Switch(creep) : true;

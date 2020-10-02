@@ -16,23 +16,16 @@ export class Builder implements ICreepConfig{
 
     // 采集能量
     Source(creep: Creep): any {
-        if(!!creep.ticksToLive && creep.ticksToLive > 1450){
-            // 刚孵化出来的 Builder 每次都要寻找获取能量的容器
-            creep.memory.source = undefined;
-        }
-        if(!!!creep.memory.source){
-            // 寻找最近的能量存储设施、能量源或掉落的能量
-            const energySource: EnergySource | undefined = FindClosestEnergyStorageForObtaining(creep);
-            if(!!energySource){
-                creep.memory.source = energySource.id;
-                creep.memory.energyTakeMethod = energySource.take;
-            }else{
-                console.log(`Creep: ${creep.name} 的采集目标不存在。`)
-                return;
-            }
+        // 寻找最近的能量存储设施、能量源或掉落的能量
+        const energySource: EnergySource | undefined = FindClosestEnergyStorageForObtaining(creep);
+        if(!!energySource){
+            creep.memory.source = energySource.id;
+            creep.memory.energyTakeMethod = energySource.take;
         }else{
-            RefillCreep(creep, this.pathColor);
+            console.log(`Creep: ${creep.name} 的采集目标不存在。`)
+            return;
         }
+        RefillCreep(creep, this.pathColor);
     }
 
     // 建造建筑

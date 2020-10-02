@@ -58,7 +58,7 @@ export function FindClosestEnergyStorageForObtaining(creep: Creep): EnergySource
 
 // 查找最近的存储能量设施以存储能量
 export function FindClostestStorageForStoring(creep: Creep): Structure | undefined {
-    const storage = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+    const spawnContainer = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: (structure: AnyOwnedStructure) => (
             (
                 (
@@ -69,21 +69,15 @@ export function FindClostestStorageForStoring(creep: Creep): Structure | undefin
                 )
                 && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             )
-            ||
-            (
-                (
-                    structure.structureType == STRUCTURE_STORAGE
-                )
-                && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            )
         )
     });
-    if(!!storage){
-        return storage;
+    if(!!spawnContainer){
+        return spawnContainer;
     }else{
         const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: function (structure): boolean { 
-                    return (structure.structureType == STRUCTURE_CONTAINER) 
+                    return (structure.structureType == STRUCTURE_CONTAINER ||
+                            structure.structureType == STRUCTURE_STORAGE) 
                         &&  structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
                 }
             });
@@ -149,11 +143,11 @@ export function ObtainTakeMethod(energySource: Structure | Source | Resource): E
     if(_.get(energySource, "structureType")){
         return "withdraw";
     }
-    if(_.get(energySource, "energy")){
-        return "harvest";
-    }
     if(_.get(energySource, "resourceType")){
         return "pickup";
+    }
+    if(_.get(energySource, "energy")){
+        return "harvest";
     }
     return undefined;
 }
@@ -242,9 +236,9 @@ export function FindFinishingConstructionSite(creep: Creep): ConstructionSite | 
     });
     if(!!constructionSites){
         // 找出完成度最高的建筑点
-        for(let percentage = 0.99; percentage >= 0; percentage = percentage - 0.01){
+        for(let percentage = 1; percentage >= -0.01; percentage = percentage - 0.01){
             constructionSite = creep.pos.findClosestByPath(constructionSites, {
-                filter: (c: ConstructionSite) => (c.progress / c.progressTotal > percentage)
+                filter: (c: ConstructionSite) => (c.progress / c.progressTotal >= percentage)
             });
             if(!!constructionSite){
                 return constructionSite;
@@ -266,7 +260,7 @@ export function FindBrokenOwnedStructure(creep: Creep): OwnedStructure | undefin
         // 找出血量百分比最低的建筑
         for(let percentage = 0.1; percentage <= 1; percentage = percentage + 0.1){
             ownedStructure = creep.pos.findClosestByPath(structures, {
-                filter: (os: Structure) => (os.hits / os.hitsMax < percentage)
+                filter: (os: Structure) => (os.hits / os.hitsMax <= percentage)
             });
             if(!!ownedStructure){
                 return ownedStructure;
@@ -292,7 +286,7 @@ export function FindBrokenStructure(creep: Creep): Structure | undefined{
         // 找出血量百分比最低的建筑
         for(let percentage = 0.1; percentage <= 1; percentage = percentage + 0.1){
             structure = creep.pos.findClosestByPath(structures, {
-                filter: (s: StructureWall) => (s.hits / s.hitsMax < percentage)
+                filter: (s: StructureWall) => (s.hits / s.hitsMax <= percentage)
             });
             if(!!structure){
                 return structure;
@@ -308,14 +302,11 @@ export function LongDistanceMove(creep: Creep, targetRoomName: string, pathColor
     if(!!targetRoomName && targetRoomName.length > 0){
         // 要占领的房间
         const room = Game.rooms[targetRoomName];
-        // 如果该房间不存在就先往房间走
-        if (!!!room) {
-            const targetPosition: RoomPosition = new RoomPosition(25, 25, targetRoomName);
-            if(!!targetPosition){
-                creep.moveTo(targetPosition, { visualizePathStyle: { stroke: pathColor }, reusePath: 50 });
-            }else {
-                console.log(`房间：${targetRoomName} 不存在。`);
-            }
+        const targetPosition: RoomPosition = new RoomPosition(25, 25, targetRoomName);
+        if(!!targetPosition){
+            creep.moveTo(targetPosition, { visualizePathStyle: { stroke: pathColor }, reusePath: 50 });
+        }else {
+            console.log(`房间：${targetRoomName} 不存在。`);
         }
     }else{
         return;

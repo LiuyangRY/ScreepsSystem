@@ -1,5 +1,4 @@
 import { IStructureConfig } from "./IStructureConfig"
-import { StructureConfig } from "./StructureConfig";
 
 export class Link implements IStructureConfig{
 
@@ -8,8 +7,10 @@ export class Link implements IStructureConfig{
     /**
      * Link 的构造函数
      */
-    constructor(structureConfig: StructureConfig = new StructureConfig()) {
-        this.MainLinkConfig = structureConfig.mainLinkConfig;
+    constructor() {
+        this.MainLinkConfig = {
+            "W23N14": "5f6ef65f69e3eb3f7ac541dd"
+        }
     }
 
     Source(structure: Structure): any {
@@ -23,6 +24,10 @@ export class Link implements IStructureConfig{
                 const linkTo = Game.getObjectById(mainLinkId as Id<StructureLink>);
                 if(!!linkTo) {
                     const linkFrom = structure as StructureLink;
+                    if(linkFrom.id == mainLinkId){
+                        // 当前 Link 是主 Link
+                        return;
+                    }
                     if(!!linkFrom && linkFrom.cooldown == 0 && linkTo.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
                         const amount = linkFrom.store.getUsedCapacity(RESOURCE_ENERGY) <= linkTo.store.getFreeCapacity(RESOURCE_ENERGY) ?
                             linkFrom.store.getUsedCapacity(RESOURCE_ENERGY) : linkTo.store.getFreeCapacity(RESOURCE_ENERGY);

@@ -1,5 +1,6 @@
 import { Mount} from "./Mount"
 import { SpawnSystem} from "./role.spawn"
+import { FindBrokenHostile } from "./StructureCommonMethod";
 
 export function loop() {
     // 挂载原型扩展方法
@@ -19,20 +20,16 @@ export function loop() {
             }
         }
     }
-    // Tower 攻击入侵者
-    for(var roomName in Game.rooms){
-        var room = Game.rooms[roomName];
-        if(!!room){
-            var towers = room.find(FIND_STRUCTURES, {
-                filter: (structure) => structure.structureType == STRUCTURE_TOWER 
-            });
-            if(!!towers){
-                for(var tower of towers){
-                    var target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    if(!!target){
-                        tower.attack(target);
-                    }
-                }
+    // 建筑工作
+    for(var structureId in Game.structures) {
+        var structure = Game.structures[structureId];
+        if(!!structure) {
+            if (!!global.hasMounted){
+                structure.Work();
+            }else{
+                // 重新挂载挂载原型扩展方法
+                global.hasMounted = false;
+                Mount();
             }
         }
     }

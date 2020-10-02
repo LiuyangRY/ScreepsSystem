@@ -5,6 +5,7 @@ interface CreepMemory {
     storage?: string;
     energyTakeMethod?: string;
     source?: string;
+    target?: string;
     room: string;
     role: string;
     working: boolean;

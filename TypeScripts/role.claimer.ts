@@ -9,7 +9,7 @@ export class Claimer implements ICreepConfig{
      */
     constructor(color: string = "#b78a94") {
         this.pathColor = color;
-        this.targetRoom = "W22N14";
+        this.targetRoom = "W23N15";
     }
 
     // 路径颜色
