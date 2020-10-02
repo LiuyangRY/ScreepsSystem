@@ -46,18 +46,22 @@ export class Miner implements ICreepConfig{
 
     // 存储能量
     Target(creep: Creep): any {
-        if(creep.room.energyAvailable < creep.room.energyCapacityAvailable){
-            creep.memory.storage = undefined;
-        }
         if (!!!creep.memory.storage) {
-            const assignedId = FindClostestStorageForStoring(creep);
-            if (!!!assignedId) {
+            const structure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (structure: AnyStructure) => {
+                    return (
+                        (structure.structureType == STRUCTURE_CONTAINER) &&
+                        structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+                    )
+                }
+            })
+            if (!!!structure) {
                 return;
             }else{
-                creep.memory.storage = assignedId.id;
+                creep.memory.storage = structure.id;
             }
         }
-        const assignedStorage = Game.getObjectById(creep.memory.storage as Id<StructureLink | StructureContainer>);
+        const assignedStorage = Game.getObjectById(creep.memory.storage as Id<StructureContainer>);
         if(!!assignedStorage){
             let sourceId = assignedStorage.id;
             let methodType = ObtainTakeMethod(assignedStorage);

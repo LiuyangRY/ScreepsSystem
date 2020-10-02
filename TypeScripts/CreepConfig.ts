@@ -53,8 +53,8 @@ export class CreepConfigs {
 
     // 各角色数量
     static CreepAmounts: Record<CreepRole, number> = {
-        [CreepRole.HARVESTER]: 2,
-        [CreepRole.UPGRADER]: 2,
+        [CreepRole.HARVESTER]: 3,
+        [CreepRole.UPGRADER]: 3,
         [CreepRole.BUILDER]: 2,
         [CreepRole.MINER]: 1,
         [CreepRole.CARRIER]: 0,
