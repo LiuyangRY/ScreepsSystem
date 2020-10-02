@@ -1,12 +1,11 @@
 import { Mount} from "./Mount"
-import { SpawnSystem} from "./role.spawn"
-import { FindBrokenHostile } from "./StructureCommonMethod";
+import { SpawnSystem} from "./Spawn"
 
 export function loop() {
     // 挂载原型扩展方法
     Mount();
     // 孵化
-    new SpawnSystem().SpawnControl();
+    new SpawnSystem().CreepManager();
     // Creep 工作
     for(var creepName in Game.creeps){
         var creep = Game.creeps[creepName];

@@ -32,8 +32,6 @@ export class Link implements IStructureConfig{
                         const amount = linkFrom.store.getUsedCapacity(RESOURCE_ENERGY) <= linkTo.store.getFreeCapacity(RESOURCE_ENERGY) ?
                             linkFrom.store.getUsedCapacity(RESOURCE_ENERGY) : linkTo.store.getFreeCapacity(RESOURCE_ENERGY);
                         linkFrom.transferEnergy(linkTo, amount);
-                    }else {
-                        console.log(`连接设施不存在。`);
                     }
                 }else {
                     console.log(`主连接设施编号"${mainLinkId}"不存在，请检查设施配置。`);

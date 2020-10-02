@@ -1,4 +1,4 @@
-import { CreepConfigs } from "./CreepConfig";
+import { CreepConfigs, CreepRole } from "./CreepConfig";
 
 const CreepExtensions = {
     // 工作方法
@@ -6,14 +6,8 @@ const CreepExtensions = {
         var creepConfig = new CreepConfigs();
         let roleName = this.memory.role;
         if(!!roleName){
-            let creepRoles = creepConfig.creepRoles;
-            let roleExist = false;
-            for(let roleIndex in creepRoles){
-                if(roleName == creepRoles[roleIndex]){
-                    roleExist = true;
-                }
-            }
-            if(!roleExist){
+            let creepRole = roleName as CreepRole;
+            if(!!!creepRole){
                 console.log(`creep ${this.name} 内存属性 role  值 ${roleName} 不属于任何已存在的creepConfigs 名称。`);
                 return;
             }else{
