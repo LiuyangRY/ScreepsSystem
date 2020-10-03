@@ -56,7 +56,7 @@ export class Harvester implements ICreepConfig{
                 creep.memory.storage = assignedId.id;
             }
         }
-        const assignedStorage = Game.getObjectById(creep.memory.storage as Id<StructureSpawn | StructureExtension | StructureLink | StructureContainer>);
+        const assignedStorage = Game.getObjectById(creep.memory.storage as Id<StructureSpawn | StructureExtension | StructureLink | StructureContainer | StructureStorage>);
         if(!!assignedStorage){
             let sourceId = assignedStorage.id;
             let methodType = ObtainTakeMethod(assignedStorage);

@@ -89,13 +89,17 @@ export function FindClostestStorageForStoring(creep: Creep): Structure | undefin
 }
 
 // 为 Creep 填充能量
-export function RefillCreep(creep: Creep, pathColor: string): void {
+export function RefillCreep(creep: Creep, pathColor: string, resourceType: ResourceConstant = RESOURCE_ENERGY): void {
     let memoryEnergyStorage = {} as EnergySource;
     if(!!creep.memory.source && !!creep.memory.energyTakeMethod){
         memoryEnergyStorage.id = creep.memory.source as Id<Structure<StructureConstant> | Source | Resource<ResourceConstant>>;
         memoryEnergyStorage.take = creep.memory.energyTakeMethod as Harvest | Pickup | Withdraw;
     }
-    if(!!!memoryEnergyStorage || !!!Game.getObjectById(memoryEnergyStorage.id) || IsEmpty(memoryEnergyStorage)){
+    if(!!creep.memory.resourceType) {
+        // 如果 Creep 的内存属性中指定了资源类型，则使用内存属性中的资源类型
+        resourceType = creep.memory.resourceType as ResourceConstant;
+    }
+    if(!!!memoryEnergyStorage || !!!Game.getObjectById(memoryEnergyStorage.id) || IsEmpty(memoryEnergyStorage, resourceType)){
         if(creep.memory.role == "carrier") {
             // 运输者
             creep.memory.source = undefined;
@@ -133,11 +137,8 @@ export function RefillCreep(creep: Creep, pathColor: string): void {
             }
             break;
         case "withdraw":
-            const storage = object as StructureStorage | StructureContainer;
-            for(const resourceType in storage.store){
-                if (creep.withdraw(storage, resourceType as ResourceConstant) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(object as StructureStorage | StructureContainer, { visualizePathStyle: {stroke: pathColor }});
-                }
+            if (creep.withdraw(object as StructureStorage, resourceType) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(object as StructureStorage | StructureContainer, { visualizePathStyle: {stroke: pathColor }});
             }
             break;
         default:
@@ -161,11 +162,11 @@ export function ObtainTakeMethod(energySource: Structure | Source | Resource): E
 }
 
 // 能量是否为空
-export function IsEmpty(energySource: EnergySource): boolean {
+export function IsEmpty(energySource: EnergySource, resourceType: ResourceConstant | undefined = RESOURCE_ENERGY): boolean {
     const object = Game.getObjectById(energySource.id);
     switch (energySource.take) {
         case "withdraw":
-            return IsStorageEmpty(object as StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink);
+            return IsStorageEmpty(object as StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink, resourceType);
         case "harvest":
             return (object as Resource).amount <= 0;
         case "pickup":
@@ -175,11 +176,11 @@ export function IsEmpty(energySource: EnergySource): boolean {
 }
 
 // 能量是否已满
-export function IsFull(energySource: EnergySource): boolean {
+export function IsFull(energySource: EnergySource, resourceType: ResourceConstant | undefined = RESOURCE_ENERGY): boolean {
     const object = Game.getObjectById(energySource.id);
     switch (energySource.take) {
         case "withdraw":
-            return IsStorageFull(object as StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink);
+            return IsStorageFull(object as StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink, resourceType);
         case "harvest":
             return (object as Resource).amount > 0;
         case "pickup":
@@ -189,12 +190,12 @@ export function IsFull(energySource: EnergySource): boolean {
 }
 
 // 存储设施是否为空
-export function IsStorageEmpty(storage: StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink): boolean {
+export function IsStorageEmpty(storage: StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink, resourcetype: ResourceConstant | undefined = RESOURCE_ENERGY): boolean {
     if(
         storage.structureType == STRUCTURE_STORAGE ||
         storage.structureType == STRUCTURE_CONTAINER
         ) {
-            return storage.store.getUsedCapacity() == 0;
+            return storage.store.getUsedCapacity(resourcetype) == 0;
         }
     if(
         storage.structureType == STRUCTURE_SPAWN ||
@@ -202,18 +203,18 @@ export function IsStorageEmpty(storage: StructureSpawn | StructureTower | Struct
         storage.structureType == STRUCTURE_EXTENSION ||
         storage.structureType == STRUCTURE_TOWER
         ) {
-        return storage.store.getUsedCapacity() == 0;
+        return storage.store.getUsedCapacity(resourcetype) == 0;
     }
     return true;
 }
 
 // 存储设施是否已满
-export function IsStorageFull(storage: StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink): boolean {
+export function IsStorageFull(storage: StructureSpawn | StructureTower | StructureExtension | StructureStorage | StructureContainer | StructureLink, resourcetype: ResourceConstant | undefined = RESOURCE_ENERGY): boolean {
     if(
         storage.structureType == STRUCTURE_STORAGE ||
         storage.structureType == STRUCTURE_CONTAINER
         ) {
-            return storage.store.getFreeCapacity() == 0;
+            return storage.store.getFreeCapacity(resourcetype) == 0;
         }
     if(
         storage.structureType == STRUCTURE_SPAWN ||
@@ -221,7 +222,7 @@ export function IsStorageFull(storage: StructureSpawn | StructureTower | Structu
         storage.structureType == STRUCTURE_EXTENSION ||
         storage.structureType == STRUCTURE_TOWER
         ) {
-        return storage.store.getFreeCapacity() == 0;
+        return storage.store.getFreeCapacity(resourcetype) == 0;
     }
     return false;
 }

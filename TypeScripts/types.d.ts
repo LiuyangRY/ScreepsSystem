@@ -9,6 +9,7 @@ interface CreepMemory {
     room: string;
     role: string;
     working: boolean;
+    resourceType?: string;
     targetPos?: {
         x: number,
         y: number,

@@ -1,4 +1,4 @@
-import { EnergySource, FindClosestEnergyStorageForObtaining, FindFinishingConstructionSite, LongDistanceMove, RefillCreep } from "./CreepCommonMethod";
+import { EnergySource, FindClosestEnergyStorageForObtaining, FindFinishingConstructionSite, RefillCreep } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Builder implements ICreepConfig{

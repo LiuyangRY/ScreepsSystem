@@ -41,9 +41,16 @@ export class Carrier implements ICreepConfig{
                     const source = Game.getObjectById(resourceIds[resourceIndex] as Id<Structure | Resource>);
                     if(!!source) {
                         const method = ObtainTakeMethod(source);
-                        if(!!method && !IsEmpty({ id: source.id, take: method })) {
-                            creep.memory.source = source.id;
-                            creep.memory.energyTakeMethod = method;
+                        if(!!method) {
+                            const structure = source as StructureStorage | StructureContainer;
+                            for(const resourceType in structure.store) {
+                                if(!!structure && !IsEmpty({ id: structure.id, take: method }, resourceType as ResourceConstant)) {
+                                    creep.memory.source = source.id;
+                                    creep.memory.energyTakeMethod = method;
+                                    creep.memory.resourceType = resourceType;
+                                    return;
+                                }
+                            }
                             return;
                         }else {
                             continue;
@@ -67,7 +74,7 @@ export class Carrier implements ICreepConfig{
                     const storage = Game.getObjectById(storageIds[storageIndex] as Id<Structure>);
                     if(!!storage) {
                         const method = ObtainTakeMethod(storage);
-                        if(!!method && !IsFull({ id: storage.id, take: method })) {
+                        if(!!method && !IsFull({ id: storage.id, take: method }, undefined)) {
                             creep.memory.storage = storage.id;
                             return;
                         }else {
