@@ -1,4 +1,4 @@
-import { FindClostestStorageForStoring, IsFull, ObtainTakeMethod } from "./CreepCommonMethod";
+import { IsFull, ObtainTakeMethod } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Miner implements ICreepConfig{
@@ -50,8 +50,9 @@ export class Miner implements ICreepConfig{
             const structure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (structure: AnyStructure) => {
                     return (
-                        (structure.structureType == STRUCTURE_CONTAINER) &&
-                        structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+                        (structure.structureType == STRUCTURE_CONTAINER ||
+                         structure.structureType == STRUCTURE_STORAGE) &&
+                        structure.store.getFreeCapacity(RESOURCE_ZYNTHIUM) > 0
                     )
                 }
             })

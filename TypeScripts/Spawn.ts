@@ -51,6 +51,10 @@ export class SpawnSystem{
             // 孵化者所在房间没有需要建造的建筑
             return false;
         }
+      case CreepRole.CARRIER:
+        if(spawn.room.name != "W23N14") {
+          return false;
+        }
       default:
         return true;
     }

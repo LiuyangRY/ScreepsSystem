@@ -96,6 +96,11 @@ export function RefillCreep(creep: Creep, pathColor: string): void {
         memoryEnergyStorage.take = creep.memory.energyTakeMethod as Harvest | Pickup | Withdraw;
     }
     if(!!!memoryEnergyStorage || !!!Game.getObjectById(memoryEnergyStorage.id) || IsEmpty(memoryEnergyStorage)){
+        if(creep.memory.role == "carrier") {
+            // 运输者
+            creep.memory.source = undefined;
+            return;
+        }
         let foundEnergyStorage: EnergySource | undefined = FindClosestEnergyStorageForObtaining(creep);
         if(!!!foundEnergyStorage){
             console.log("Creep: " + creep.name + " 找不到可供使用的能量存储设施。");
@@ -128,8 +133,11 @@ export function RefillCreep(creep: Creep, pathColor: string): void {
             }
             break;
         case "withdraw":
-            if (creep.withdraw(object as StructureStorage | StructureContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(object as StructureStorage | StructureContainer, { visualizePathStyle: {stroke: pathColor }});
+            const storage = object as StructureStorage | StructureContainer;
+            for(const resourceType in storage.store){
+                if (creep.withdraw(storage, resourceType as ResourceConstant) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(object as StructureStorage | StructureContainer, { visualizePathStyle: {stroke: pathColor }});
+                }
             }
             break;
         default:
@@ -186,7 +194,7 @@ export function IsStorageEmpty(storage: StructureSpawn | StructureTower | Struct
         storage.structureType == STRUCTURE_STORAGE ||
         storage.structureType == STRUCTURE_CONTAINER
         ) {
-            return storage.store.getUsedCapacity(RESOURCE_ENERGY) == 0;
+            return storage.store.getUsedCapacity() == 0;
         }
     if(
         storage.structureType == STRUCTURE_SPAWN ||
@@ -194,7 +202,7 @@ export function IsStorageEmpty(storage: StructureSpawn | StructureTower | Struct
         storage.structureType == STRUCTURE_EXTENSION ||
         storage.structureType == STRUCTURE_TOWER
         ) {
-        return storage.store.getUsedCapacity(RESOURCE_ENERGY) == 0;
+        return storage.store.getUsedCapacity() == 0;
     }
     return true;
 }
@@ -205,7 +213,7 @@ export function IsStorageFull(storage: StructureSpawn | StructureTower | Structu
         storage.structureType == STRUCTURE_STORAGE ||
         storage.structureType == STRUCTURE_CONTAINER
         ) {
-            return storage.store.getFreeCapacity(RESOURCE_ENERGY) == 0;
+            return storage.store.getFreeCapacity() == 0;
         }
     if(
         storage.structureType == STRUCTURE_SPAWN ||
@@ -213,7 +221,7 @@ export function IsStorageFull(storage: StructureSpawn | StructureTower | Structu
         storage.structureType == STRUCTURE_EXTENSION ||
         storage.structureType == STRUCTURE_TOWER
         ) {
-        return storage.store.getFreeCapacity(RESOURCE_ENERGY) == 0;
+        return storage.store.getFreeCapacity() == 0;
     }
     return false;
 }

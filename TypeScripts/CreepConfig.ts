@@ -7,6 +7,7 @@ import { Claimer } from "./role.claimer";
 import { LongDistanceHarvester } from "./role.longDistanceHarvester";
 import { Attacker } from "./role.attacker";
 import { Miner } from "./role.miner";
+import { Carrier } from "./role.carrier";
 
 // Creep 角色枚举
 export enum CreepRole {
@@ -57,10 +58,10 @@ export class CreepConfigs {
         [CreepRole.UPGRADER]: 3,
         [CreepRole.BUILDER]: 2,
         [CreepRole.MINER]: 1,
-        [CreepRole.CARRIER]: 0,
+        [CreepRole.CARRIER]: 2,
         [CreepRole.LONGDISTANCEHARVESTER]: 2,
         [CreepRole.REPAIRER]: 1,
-        [CreepRole.WALLREPAIRER]: 1,
+        [CreepRole.WALLREPAIRER]: 2,
         [CreepRole.ATTACKER]: 0,
         [CreepRole.CLAIMER]: 0
     }
@@ -144,6 +145,7 @@ export class CreepConfigs {
               worker = new Miner();
               break;
             case CreepRole.CARRIER:
+              worker = new Carrier();
               break;
         }
         working = worker?.Switch ? worker.Switch(creep) : true;
