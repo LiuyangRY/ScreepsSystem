@@ -64,10 +64,15 @@ export function FindClostestStorageForStoring(creep: Creep): Structure | undefin
                 (
                     structure.structureType == STRUCTURE_SPAWN ||
                     structure.structureType == STRUCTURE_TOWER ||
-                    structure.structureType == STRUCTURE_EXTENSION ||
-                    structure.structureType == STRUCTURE_LINK
+                    structure.structureType == STRUCTURE_EXTENSION 
                 )
                 && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                ||
+                (
+                    structure.structureType == STRUCTURE_LINK &&
+                    // Link 中存储的能量小于 80% 时开始补充
+                    (structure.store.getUsedCapacity() || 0) < (structure.store.getCapacity() || 0) * 0.8
+                )
             )
         )
     });

@@ -9,23 +9,39 @@ export class LongDistanceHarvester implements ICreepConfig{
      */
     constructor(color: string = "#6a9955") {
         this.pathColor = color;
-        this.targetRoomName = "W23N15";
+        this.OutsideMinesName = {
+            "W23N14": [
+                "W23N15"
+            ],
+            "W23N15": [
+                "W23N16"
+            ]
+        };
     }
 
     // 路径颜色
     pathColor: string;
 
-    // 源房间名称
-    homeRoomName: string = "W23N14";
-
-    // 目标房间名称
-    targetRoomName: string | undefined;
+    // 房间外矿
+    OutsideMinesName: Record<string, string[]> | undefined;
 
     // 采集能量矿
     Source(creep: Creep): any {
-        if(!!this.targetRoomName && creep.room.name != this.targetRoomName) {
+        if(!!!creep.memory.targetPos && !!this.OutsideMinesName) {
+            const index: number = Math.floor(Math.random() * this.OutsideMinesName[creep.room.name]?.length);
+            const targetRoomName: string = this.OutsideMinesName[creep.room.name][index]; 
+            if(!!targetRoomName) {
+                creep.memory.targetPos = {
+                    x: 25,
+                    y: 25,
+                    room: targetRoomName
+                }
+            }
+        }
+        
+        if(!!creep.memory.targetPos && creep.room.name != creep.memory.targetPos.room) {
             // 不在目标房间
-            LongDistanceMove(creep, this.targetRoomName, this.pathColor);
+            LongDistanceMove(creep, creep.memory.targetPos.room, this.pathColor);
             return;
         }
 
@@ -58,9 +74,9 @@ export class LongDistanceHarvester implements ICreepConfig{
 
     // 存储能量
     Target(creep: Creep): any {
-        if(!!this.homeRoomName && creep.room.name != this.homeRoomName) {
+        if(!!creep.memory.room && creep.room.name != creep.memory.room) {
             // 不在源房间
-            LongDistanceMove(creep, this.homeRoomName, this.pathColor);
+            LongDistanceMove(creep, creep.memory.room, this.pathColor);
             return;
         }
         if (!!!creep.memory.storage) {

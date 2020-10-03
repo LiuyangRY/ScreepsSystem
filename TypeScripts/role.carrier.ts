@@ -1,4 +1,4 @@
-import { IsEmpty, IsFull, ObtainTakeMethod, RefillCreep } from "./CreepCommonMethod";
+import { EnergyTakeMethod, IsEmpty, IsFull, ObtainTakeMethod, RefillCreep } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Carrier implements ICreepConfig{
@@ -14,6 +14,7 @@ export class Carrier implements ICreepConfig{
                 "5f741906a34b87c6a5d2f991", // 矿场容器
                 "5f60fb2bd97ebec7bbbc56fa", // 第二资源点容器
                 "5f77620a20d9047423892ee8", // 外矿容器
+                "5f60dfb080a55c46527ab9d3", // 控制器容器
             ]
         };
         this.KeepResourcePointIds = {
@@ -43,6 +44,7 @@ export class Carrier implements ICreepConfig{
                         const method = ObtainTakeMethod(source);
                         if(!!method) {
                             const structure = source as StructureStorage | StructureContainer;
+                            if(!!structure.store && structure.store)
                             for(const resourceType in structure.store) {
                                 if(!!structure && !IsEmpty({ id: structure.id, take: method }, resourceType as ResourceConstant)) {
                                     creep.memory.source = source.id;
@@ -51,7 +53,6 @@ export class Carrier implements ICreepConfig{
                                     return;
                                 }
                             }
-                            return;
                         }else {
                             continue;
                         }
@@ -61,6 +62,12 @@ export class Carrier implements ICreepConfig{
                 console.log("运输者资源获取点无配置信息，请检查配置。")
             }
         }else{
+            if(IsEmpty({ id: creep.memory.source as Id<Structure<StructureConstant>>, take: creep.memory.energyTakeMethod as EnergyTakeMethod}, creep.memory.resourceType as ResourceConstant)) {
+                creep.memory.source = undefined;
+                creep.memory.energyTakeMethod = undefined;
+                creep.memory.resourceType = undefined;
+                return;
+            }
             RefillCreep(creep, this.pathColor);
         }
     }

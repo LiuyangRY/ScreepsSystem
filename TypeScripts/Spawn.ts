@@ -55,9 +55,8 @@ export class SpawnSystem{
         if(spawn.room.name != "W23N14") {
           return false;
         }
-      default:
-        return true;
     }
+    return true;
   }
 
   // 显示孵化信息
