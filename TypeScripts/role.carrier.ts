@@ -102,8 +102,12 @@ export class Carrier implements ICreepConfig{
             let methodType = ObtainTakeMethod(assignedStorage);
             if(!IsFull({ id: sourceId, take: methodType})){
                 for(const resourceType in creep.store) {
-                    if(creep.transfer(assignedStorage, resourceType as ResourceConstant) == ERR_NOT_IN_RANGE){
+                    const result = creep.transfer(assignedStorage, resourceType as ResourceConstant);
+                    if(result == ERR_NOT_IN_RANGE){
                         creep.moveTo(assignedStorage, { visualizePathStyle: { stroke: this.pathColor }});
+                    }
+                    if(result == ERR_INVALID_TARGET){
+                        creep.memory.storage = "5f676b5f18223f863075c569";
                     }
                 }
             }else{
