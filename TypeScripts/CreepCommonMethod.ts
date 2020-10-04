@@ -312,10 +312,14 @@ export function FindBrokenStructure(creep: Creep): Structure | undefined{
 }
 
 // 移动到其他房间
-export function LongDistanceMove(creep: Creep, targetRoomName: string, pathColor: string = "#ffffff"): void {
+export function LongDistanceMove(creep: Creep, targetRoomName: string, pathColor: string = "#ffffff", homeExit: RoomPosition | undefined = undefined): void {
+    if(!!creep.memory.room && !!homeExit && creep.memory.room == creep.room.name && homeExit.roomName == creep.room.name) {
+        // 如果指定了源房间的出口，则从指定出口离开源房间
+        creep.moveTo(homeExit, { visualizePathStyle: { stroke: pathColor }, reusePath: 50 });
+        return;
+    }
     if(!!targetRoomName && targetRoomName.length > 0){
         // 要占领的房间
-        const room = Game.rooms[targetRoomName];
         const targetPosition: RoomPosition = new RoomPosition(25, 25, targetRoomName);
         if(!!targetPosition){
             creep.moveTo(targetPosition, { visualizePathStyle: { stroke: pathColor }, reusePath: 50 });

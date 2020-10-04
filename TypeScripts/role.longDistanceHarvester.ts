@@ -40,9 +40,15 @@ export class LongDistanceHarvester implements ICreepConfig{
         }
         
         if(!!creep.memory.targetPos && creep.room.name != creep.memory.targetPos.room) {
-            // 不在目标房间
-            LongDistanceMove(creep, creep.memory.targetPos.room, this.pathColor);
-            return;
+            if(creep.room.name == "W23N15") {
+                const exit: RoomPosition = new RoomPosition(28, 0, "W23N15");
+                LongDistanceMove(creep, creep.memory.targetPos.room, this.pathColor, exit);
+                return;
+            }else {
+                // 不在目标房间
+                LongDistanceMove(creep, creep.memory.targetPos.room, this.pathColor);
+                return;
+            }
         }
 
         if(!!!creep.memory.source){
