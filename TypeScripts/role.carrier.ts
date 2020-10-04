@@ -19,6 +19,8 @@ export class Carrier implements ICreepConfig{
         };
         this.KeepResourcePointIds = {
             "W23N14": [
+                "5f67c46c5a3e3e61869e74bc", // 第二资源点 Link
+                "5f737f27ad27d452601473ca", // 外矿 Link
                 "5f676b5f18223f863075c569", // 主基地存储器
             ]
         };
@@ -64,6 +66,7 @@ export class Carrier implements ICreepConfig{
         }else{
             if(IsEmpty({ id: creep.memory.source as Id<Structure<StructureConstant>>, take: creep.memory.energyTakeMethod as EnergyTakeMethod}, creep.memory.resourceType as ResourceConstant)) {
                 creep.memory.source = undefined;
+                creep.memory.storage = undefined;
                 creep.memory.energyTakeMethod = undefined;
                 creep.memory.resourceType = undefined;
                 return;
