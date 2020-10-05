@@ -20,7 +20,7 @@ export class Miner implements ICreepConfig{
             // 寻找最近的矿场
             const mineral: Mineral | null = creep.pos.findClosestByRange(FIND_MINERALS,{
                 filter: (m) => (
-                    m.mineralAmount > 0 || m.ticksToRegeneration < 100
+                    m.mineralAmount > 0 || m.ticksToRegeneration < 50
                 )
             });
             if(!!mineral){
@@ -28,6 +28,8 @@ export class Miner implements ICreepConfig{
                 creep.memory.energyTakeMethod = "harvest";
             }else{
                 console.log(`Creep: ${creep.name} 的采集目标不存在。`)
+                creep.memory.source = undefined;
+                creep.memory.energyTakeMethod = undefined;
                 return;
             }
         }else{

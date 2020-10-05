@@ -50,11 +50,26 @@ export class SpawnSystem{
         if (!!!targets || targets.length == 0) {
             // 孵化者所在房间没有需要建造的建筑
             return false;
+        }else {
+          return true;
         }
       case CreepRole.CARRIER:
         if(spawn.room.name != "W23N14") {
           return false;
+        } else {
+          return true;
         }
+      case CreepRole.MINER:
+        const mineral: Mineral | null = spawn.pos.findClosestByRange(FIND_MINERALS,{
+          filter: (m) => (
+              m.mineralAmount > 0 || m.ticksToRegeneration < 50
+          )
+      });
+      if(!!mineral) {
+        return true;
+      }else {
+        return false;
+      }
     }
     return true;
   }
