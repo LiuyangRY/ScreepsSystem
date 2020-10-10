@@ -3,3 +3,6 @@ JavaScripts/
 
 # 忽略 JavaScript 文件
 *.js
+
+# 包含 screeps-profiler.js
+!screeps-profiler.js
