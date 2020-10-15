@@ -2,8 +2,8 @@ import { DEFAULT_OPERATION_MODE,PROFILER_COLONY_LIMIT, USE_PROFILER } from "../~
 import { IsIVM } from "../Utilities/Utils";
 import { log } from "../Console/Log";
 import { Profile } from "../Profiler/Decorator";
-import { DEFAULT_OVERMIND_SIGNATURE } from "../../../Templete/screeps-typescript-master/src-overmind/~settings";
-import { Stats } from "../../../Templete/screeps-typescript-master/src-overmind/stats/stats";
+import { Stats } from "../Stats/Stats";
+
 // 自治模式
 export enum Autonomy {
     Manual          = 0,    // 手动
@@ -197,7 +197,6 @@ export class Mem {
             delete Memory.profiler;
         }
         _.defaults(Memory.settings, {
-            signature       : DEFAULT_OVERMIND_SIGNATURE,
             operationMode   : DEFAULT_OPERATION_MODE,
             log             : {},
             enableVisuals   : true
@@ -237,7 +236,7 @@ export class Mem {
         this.CleanColonies();
         this.CleanPathingMemory();
         this.CleanConstructionSites();
-        Stats.clean();
+        Stats.Clean();
     }
 
     /*
