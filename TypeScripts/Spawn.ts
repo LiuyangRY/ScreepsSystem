@@ -9,35 +9,36 @@ export class SpawnSystem{
 
   // Creep 管理
   CreepManager(): void {
-      this.ForEverySpawn(spawn => {
-        if (spawn.spawning) {
-          this.DrawSpawning(spawn);
-        }
-        else {
-          for (const _role of CreepConfigs.CreepRoleOrder) {
-            const role = _role as CreepRole
-            const amountOfLive = _.filter(Game.creeps, creep => creep && creep.memory.role as unknown as CreepRole === role)
-              .filter(creep => creep.memory.room === spawn.room.name)
-              .length;
-            if (amountOfLive < CreepConfigs.CreepAmounts[role]) {
-              for (const creepDef of CreepConfigs.CreepRoleDefinitions[role]) {
-                const availableEnergy = spawn.room.energyAvailable;
-                if (availableEnergy >= creepDef.cost && !spawn.spawning && this.HasTask(spawn, role)) {
-                  spawn.spawnCreep(creepDef.parts, `${spawn.room.name}${spawn.name}${role.toString()}:${Game.time}`, {
-                    memory: {
-                      role: _role.toString(),
-                      room: spawn.room.name,
-                      working: false,
-                      param: {}
-                    }
-                  });
-                  return;
-                }
+    this.CleanCreep();
+    this.ForEverySpawn(spawn => {
+      if (spawn.spawning) {
+        this.DrawSpawning(spawn);
+      }
+      else {
+        for (const _role of CreepConfigs.CreepRoleOrder) {
+          const role = _role as CreepRole
+          const amountOfLive = _.filter(Game.creeps, creep => creep && creep.memory.role as unknown as CreepRole === role)
+            .filter(creep => creep.memory.room === spawn.room.name)
+            .length;
+          if (amountOfLive < CreepConfigs.CreepAmounts[role]) {
+            for (const creepDef of CreepConfigs.CreepRoleDefinitions[role]) {
+              const availableEnergy = spawn.room.energyAvailable;
+              if (availableEnergy >= creepDef.cost && !spawn.spawning && this.HasTask(spawn, role)) {
+                spawn.spawnCreep(creepDef.parts, `${spawn.room.name}${spawn.name}${role.toString()}:${Game.time}`, {
+                  memory: {
+                    role: _role.toString(),
+                    room: spawn.room.name,
+                    working: false,
+                    param: {}
+                  }
+                });
+                return;
               }
             }
           }
         }
-      });
+      }
+    });
   }
   
 
@@ -93,5 +94,14 @@ export class SpawnSystem{
           const spawn = Game.spawns[spawnName];
           onSpawn(spawn);
       }
+  }
+
+  // 清理 Creep
+  CleanCreep() {
+    for(let creepName in Memory.creeps) {
+      if(!Game.creeps[creepName]) {
+        delete Memory.creeps[creepName];
+      }
+    }
   }
 }

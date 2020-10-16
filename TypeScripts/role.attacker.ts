@@ -60,7 +60,7 @@ export class Attacker implements ICreepConfig{
         // creep 在目标房间且 creep 之前的工作状态为“不工作”
         if(creep.room.name == this.targetRoomName && !!!creep.memory.working){
             creep.memory.working = true;
-            creep.say("🚧 执行声明工作。");
+            creep.say("🚧 执行攻击任务。");
         }
         return creep.memory.working;
     }

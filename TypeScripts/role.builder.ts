@@ -1,4 +1,4 @@
-import { EnergySource, FindClosestEnergyStorageForObtaining, FindFinishingConstructionSite, RefillCreep } from "./CreepCommonMethod";
+import { EnergySource, FindClosestEnergyStorageForObtaining, FindFinishingConstructionSite, LongDistanceMove, RefillCreep } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
 export class Builder implements ICreepConfig{
@@ -35,15 +35,16 @@ export class Builder implements ICreepConfig{
             // 更换目标建筑后，重新寻找数据源
             creep.memory.source = undefined;
             if(!!!creep.memory.construction){
-                if(!!creep.room.controller){
-                    // 如果没有需要建造的建筑，返回到控制器待命
-                    creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: this.pathColor }});
-                }
-                // 建造新房间时启用
-                // if(creep.room.name != "W23N15") {
-                //     LongDistanceMove(creep, "W23N15", this.pathColor);
-                //     return;
+                // if(!!creep.room.controller){
+                //     //如果没有需要建造的建筑，返回到控制器待命
+                //     creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: this.pathColor }});
                 // }
+                // 建造新房间时启用
+                if(creep.room.name != "W23N16") {
+                    const exit: RoomPosition = new RoomPosition(28, 0, "W23N15");
+                    LongDistanceMove(creep, "W23N16", this.pathColor, exit);
+                    return;
+                }
             }
         }else{
             const construction = Game.getObjectById(creep.memory.construction as Id<ConstructionSite>);
