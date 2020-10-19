@@ -15,6 +15,12 @@ export class Carrier implements ICreepConfig{
                 "5f60fb2bd97ebec7bbbc56fa", // 第二资源点容器
                 "5f77620a20d9047423892ee8", // 外矿容器
                 "5f60dfb080a55c46527ab9d3", // 控制器容器
+            ],
+            "W23N15": [
+                "5f89bef29a5280f5d93aa8d7", // 矿场容器
+                "5f799436f75b903d643dc4a2", // 控制器容器
+                "5f7951121c9edb4456678426", // 控制器容器
+                "5f79e82c49e2a10116db8ec3", // 第二资源点容器
             ]
         };
         this.KeepResourcePointIds = {
@@ -22,6 +28,10 @@ export class Carrier implements ICreepConfig{
                 "5f67c46c5a3e3e61869e74bc", // 第二资源点 Link
                 "5f737f27ad27d452601473ca", // 外矿 Link
                 "5f676b5f18223f863075c569", // 主基地存储器
+            ],
+            "W23N15": [
+                "5f86df96496772639b753908", // 外矿 Link
+                "5f7bb70d2d04473f7e629760", // 主基地存储器
             ]
         };
     }

@@ -55,11 +55,12 @@ export class SpawnSystem{
           return true;
         }
       case CreepRole.CARRIER:
-        if(spawn.room.name != "W23N14") {
-          return false;
-        } else {
-          return true;
-        }
+        // if(spawn.room.name != "W23N14") {
+        //   return false;
+        // } else {
+        //   return true;
+        // }
+        return true;
       case CreepRole.MINER:
         const mineral: Mineral | null = spawn.pos.findClosestByRange(FIND_MINERALS,{
           filter: (m) => (

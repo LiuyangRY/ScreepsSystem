@@ -9,7 +9,8 @@ export class Link implements IStructureConfig{
      */
     constructor() {
         this.MainLinkConfig = {
-            "W23N14": "5f6ef65f69e3eb3f7ac541dd"
+            "W23N14": "5f6ef65f69e3eb3f7ac541dd",
+            "W23N15": "5f858ebdc938df916f1c0bca"
         }
     }
 
