@@ -45,15 +45,12 @@ export class Harvester implements ICreepConfig{
 
     // 存储能量
     Target(creep: Creep): any {
-        if(creep.room.energyAvailable < creep.room.energyCapacityAvailable){
-            creep.memory.storage = undefined;
-        }
-        if (!!!creep.memory.storage) {
-            const assignedId = FindClostestStorageForStoring(creep);
-            if (!!!assignedId) {
+        if(!!!creep.memory.storage) {
+            const storageId = FindClostestStorageForStoring(creep);
+            if(!!!storageId) {
                 return;
-            }else{
-                creep.memory.storage = assignedId.id;
+            } else {
+                creep.memory.storage = storageId.id;
             }
         }
         const assignedStorage = Game.getObjectById(creep.memory.storage as Id<StructureSpawn | StructureExtension | StructureLink | StructureContainer | StructureStorage>);

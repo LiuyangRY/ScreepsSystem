@@ -8,6 +8,7 @@ import { LongDistanceHarvester } from "./role.longDistanceHarvester";
 import { Attacker } from "./role.attacker";
 import { Miner } from "./role.miner";
 import { Carrier } from "./role.carrier";
+import { RoadRepairer } from "./role.roadRepairer";
 
 // Creep 角色枚举
 export enum CreepRole {
@@ -16,6 +17,7 @@ export enum CreepRole {
     BUILDER = "builder",
     LONGDISTANCEHARVESTER = "longDistanceHarvester",
     REPAIRER = "repairer",
+    ROADREPAIRER = "roadRepairer",
     WALLREPAIRER = "wallRepairer",
     ATTACKER = "attacker",
     CLAIMER = "claimer",
@@ -45,6 +47,7 @@ export class CreepConfigs {
         CreepRole.BUILDER,
         CreepRole.LONGDISTANCEHARVESTER,
         CreepRole.REPAIRER,
+        CreepRole.ROADREPAIRER,
         CreepRole.WALLREPAIRER,
         CreepRole.MINER,
         CreepRole.CARRIER,
@@ -60,8 +63,9 @@ export class CreepConfigs {
         [CreepRole.MINER]: 1,
         [CreepRole.CARRIER]: 2,
         [CreepRole.LONGDISTANCEHARVESTER]: 2,
-        [CreepRole.REPAIRER]: 1,
-        [CreepRole.WALLREPAIRER]: 2,
+        [CreepRole.REPAIRER]: 2,
+        [CreepRole.ROADREPAIRER]: 1,
+        [CreepRole.WALLREPAIRER]: 1,
         [CreepRole.ATTACKER]: 0,
         [CreepRole.CLAIMER]: 0
     }
@@ -89,6 +93,9 @@ export class CreepConfigs {
           ],
           [CreepRole.REPAIRER]: [
             new CreepDefinition(CreepRole.REPAIRER, [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 500)
+          ],
+          [CreepRole.ROADREPAIRER]: [
+            new CreepDefinition(CreepRole.WALLREPAIRER, [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 500)
           ],
           [CreepRole.WALLREPAIRER]: [
             new CreepDefinition(CreepRole.WALLREPAIRER, [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], 500)
@@ -131,6 +138,9 @@ export class CreepConfigs {
               break;
             case CreepRole.REPAIRER:
               worker = new Repairer();
+              break;
+            case CreepRole.ROADREPAIRER:
+              worker = new RoadRepairer();
               break;
             case CreepRole.WALLREPAIRER:
               worker = new WallRepairer();

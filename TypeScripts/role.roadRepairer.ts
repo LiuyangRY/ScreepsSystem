@@ -1,10 +1,10 @@
-import { EnergySource, FindBrokenStructure, FindBrokenWall, FindClosestEnergyStorageForObtaining, RefillCreep } from "./CreepCommonMethod";
+import { EnergySource, FindBrokenStructure, FindClosestEnergyStorageForObtaining, RefillCreep } from "./CreepCommonMethod";
 import { ICreepConfig } from "./ICreepConfig"
 
-export class WallRepairer implements ICreepConfig{
+export class RoadRepairer implements ICreepConfig{
 
     /**
-     * WallRepairer 类的构造函数
+     * RoadRepairer 类的构造函数
      * @property color creep 路径的颜色
      */
     constructor(color: string = "#66cc66") {
@@ -30,9 +30,9 @@ export class WallRepairer implements ICreepConfig{
         }
     }
 
-    // 维修墙、路或者容器
+    // 维修路或者容器
     Target(creep: Creep): any {
-        const target = FindBrokenWall(creep)?.id;
+        const target = FindBrokenStructure(creep)?.id;
         if(!!target){
             const structure = Game.getObjectById(target as Id<Structure>);
             if(!!structure) {

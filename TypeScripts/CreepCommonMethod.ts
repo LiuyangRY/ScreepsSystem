@@ -285,15 +285,38 @@ export function FindBrokenOwnedStructure(creep: Creep): OwnedStructure | undefin
     }
 }
 
-// 查找血量最低的中立建筑
+// 查找血量最低的中立建筑(道路、容器)
 export function FindBrokenStructure(creep: Creep): Structure | undefined{
     let structure: Structure | null;
     const structures = creep.room.find(FIND_STRUCTURES, {
         filter: (s: Structure) => (s.hits < s.hitsMax ) && 
             (
                 s.structureType == STRUCTURE_ROAD ||
-                s.structureType == STRUCTURE_WALL || 
                 s.structureType == STRUCTURE_CONTAINER
+            )
+    });
+    if(!!structures){
+        // 找出血量百分比最低的建筑
+        for(let percentage = 0.01; percentage <= 1; percentage = percentage + 0.01){
+            structure = creep.pos.findClosestByPath(structures, {
+                filter: (s: Structure) => (s.hits / s.hitsMax <= percentage)
+            });
+            if(!!structure){
+                return structure;
+            }
+        }
+    }else {
+        return undefined;
+    }
+}
+
+// 查找血量最低的中立建筑(墙)
+export function FindBrokenWall(creep: Creep): Structure | undefined{
+    let structure: Structure | null;
+    const structures = creep.room.find(FIND_STRUCTURES, {
+        filter: (s: Structure) => (s.hits < s.hitsMax ) && 
+            (
+                s.structureType == STRUCTURE_WALL
             )
     });
     if(!!structures){
