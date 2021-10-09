@@ -61,7 +61,7 @@ export class CreepConfigs {
         [CreepRole.UPGRADER]: 3,
         [CreepRole.BUILDER]: 2,
         [CreepRole.MINER]: 1,
-        [CreepRole.CARRIER]: 2,
+        [CreepRole.CARRIER]: 0,
         [CreepRole.LONGDISTANCEHARVESTER]: 2,
         [CreepRole.REPAIRER]: 2,
         [CreepRole.ROADREPAIRER]: 1,

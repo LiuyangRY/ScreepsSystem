@@ -10,16 +10,8 @@ export class Upgrader implements ICreepConfig{
     constructor(color: string = "#3ac98f") {
         this.pathColor = color;
         this.ObtainingResourcePointIds = {
-            "W23N14": [
-                "5f6ef65f69e3eb3f7ac541dd", // 控制器 Link
-                "5f60dfb080a55c46527ab9d3", // 控制器 Container
-                "5f676b5f18223f863075c569", // 主基地 Storage
-            ],
-            "W23N15": [
-                "5f858ebdc938df916f1c0bca", // 控制器 Link
-                "5f77b73f729f2d51072c5ae6", // 控制器 Container
-                "5f7951121c9edb4456678426", // 控制器 Container
-                "5f7bb70d2d04473f7e629760", // 主基地 Storage
+            "W42S55": [
+                "579fa8f80700be0674d2e937", // 资源点1
             ]
         };
     }
