@@ -9,61 +9,18 @@ export class LongDistanceHarvester implements ICreepConfig{
      */
     constructor(color: string = "#6a9955") {
         this.pathColor = color;
-        this.OutsideMinesName = {
-            "W23N14": [
-                "W23N15"
-            ],
-            "W23N15": [
-                "W23N16"
-            ]
-        };
     }
 
     // 路径颜色
     pathColor: string;
 
     // 房间外矿
-    OutsideMinesName: Record<string, string[]> | undefined;
 
     // 采集能量矿
     Source(creep: Creep): any {
-        if(!!!creep.memory.targetPos && !!this.OutsideMinesName) {
-            const index: number = Math.floor(Math.random() * this.OutsideMinesName[creep.room.name]?.length);
-            const targetRoomName: string = this.OutsideMinesName[creep.room.name][index]; 
-            if(!!targetRoomName) {
-                creep.memory.targetPos = {
-                    x: 25,
-                    y: 25,
-                    room: targetRoomName
-                }
-            }
-        }
-        
-        if(!!creep.memory.targetPos && creep.room.name != creep.memory.targetPos.room) {
-            if(creep.room.name == "W23N15") {
-                const exit: RoomPosition = new RoomPosition(28, 0, "W23N15");
-                LongDistanceMove(creep, creep.memory.targetPos.room, this.pathColor, exit);
-                return;
-            }else {
-                // 不在目标房间
-                LongDistanceMove(creep, creep.memory.targetPos.room, this.pathColor);
-                return;
-            }
-        }
-
         if(!!!creep.memory.source){
-            // 寻找最近的能量存储设施、能量源或掉落的能量
-            const source: Source | null = creep.pos.findClosestByRange(FIND_SOURCES,{
-                filter: function (source): boolean { 
-                    return source.energy > 0
-                }});
-            if(!!source){
-                creep.memory.source = source.id;
-                creep.memory.energyTakeMethod = "harvest";
-            }else{
-                console.log(`Creep: ${creep.name} 的采集目标不存在。`)
-                return;
-            }
+            creep.memory.source = "579fa8f80700be0674d2e938";
+            creep.memory.energyTakeMethod = "harvest";
         }else{
             const source = Game.getObjectById(creep.memory.source as Id<Source>);
             if(!!source){
